@@ -15,4 +15,8 @@ public class ContextEstat {
 		this.grups = grups;
 		this.centres = centres;
 	}
+	
+	public Grupos getGrups() {return grups;}
+
+	public Centros getCentros() {return centres;}
 }
