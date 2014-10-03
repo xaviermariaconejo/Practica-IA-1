@@ -1,5 +1,7 @@
 package IA.Desastres;
 
+/**Representa la part estàtica de l'estat del problema, són les dades que no cambien entre solucions.
+ * @author Josep Sánchez Ferreres*/
 public class ContextEstat {
 
 	/**Dimensions de la zona de rescat (és quadrada)*/

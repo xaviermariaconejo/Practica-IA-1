@@ -2,6 +2,8 @@ package IA.Desastres;
 
 import java.util.ArrayList;
 
+/**Representa la part dinàmica de l'estat del problema, és a dir, codifica una solució, i soporta els operadors de cerca.
+ * @author Josep Sánchez Ferreres*/
 public class Estat {
 	
 	private ContextEstat context;
