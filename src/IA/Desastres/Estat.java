@@ -2,7 +2,7 @@ package IA.Desastres;
 
 import java.util.ArrayList;
 
-/**Representa la part dinàmica de l'estat del problema, és a dir, codifica una solució, i soporta els operadors de cerca.
+/**Representa la part dinàmica de l'estat del problema, és a dir, codifica una solució, i implementa els operadors de cerca.
  * @author Josep Sánchez Ferreres*/
 public class Estat {
 	
@@ -45,6 +45,12 @@ public class Estat {
 		Grupo i = helicopters.get(H).get(Gi);
 		helicopters.get(H).set(Gi, helicopters.get(H).get(Gj));
 		helicopters.get(H).set(Gj, i);
+	}
+	
+	/**Retorna el grup G-èssim de l'helicòpter H.
+	 * @pre H inRange(helicopters); G inRange(helicopters[H])*/
+	public Grupo getGrup(int H, int G) {
+		return helicopters.get(H).get(G);		
 	}
 	
 	@Override
