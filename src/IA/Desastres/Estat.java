@@ -16,7 +16,7 @@ public class Estat {
 	/**Generador de nombres aleatoris*/
 	private Random random;
 	
-	/**Guarda, per cada helicòpter, el temps total que triga en realitzar tots els seus viatges en minuts*/
+	/**Guarda, per cada helicï¿½pter, el temps total que triga en realitzar tots els seus viatges en minuts*/
 	private double[] temps;
 	
 	/**Guarda, per cada helicÃ²pter, la llista de grups que ha de rescatar*/
@@ -125,7 +125,6 @@ public class Estat {
 	private void recalcularTemps1(int H, int G) {
 		Grupo g = helicopters.get(H).get(G);
 		temps[H] = temps[H] - g.getPrioridad()*g.getNPersonas();
-		if ()
 		Grupo aux = helicopters.get(H).get(G - 1);
 		int x = g.getCoordX();
 		int y = g.getCoordY();
