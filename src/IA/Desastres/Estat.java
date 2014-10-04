@@ -7,7 +7,13 @@ import java.util.Random;
  * @author Josep Sánchez Ferreres*/
 public class Estat {
 	
+	/**Tipus de solució inicial*/
+	static enum TipusInicial {RANDOM, GREEDY};
+	
+	/**Informació estàtica sobre l'estat*/
 	private ContextEstat context;
+
+	/**Generador de nombres aleatoris*/
 	private Random random;
 	
 	/**Guarda, per cada helicòpter, la llista de grups que ha de rescatar*/
@@ -23,6 +29,29 @@ public class Estat {
 		this.helicopters = new ArrayList<ArrayList<Grupo>>(nH);
 		for(int i = 0; i < nH; ++i) helicopters.set(i, new ArrayList<Grupo>());
 	}
+	
+	/**Constructora de còpia*/
+	public Estat(Estat e) {
+		this.context = e.context;
+		this.helicopters = new ArrayList<ArrayList<Grupo>>(e.helicopters.size());
+		//No fem deep copy perquè no ens interessa clonar grups, només punters a grups.
+		for(int i = 0; i < helicopters.size(); ++i) this.helicopters.set(i, (ArrayList<Grupo>)e.helicopters.get(i).clone());
+	}
+	
+	public void generaSoucioInicial(TipusInicial t) {
+		switch(t) {
+		case RANDOM: generaSolucioInicial1(); break;
+		case GREEDY: generaSolucioInicial2(); break;
+		}
+	}
+	
+	
+	/*  =======================================================
+	  
+	                 Generació de la solució inicial
+	  
+	    =======================================================
+	 */
 	
 	/**Genera una solució inicial aleatoria amb els grups distribuïts equitativament entre els helicòpters
 	 * @pre helicopters inicialitzat.*/
@@ -45,26 +74,18 @@ public class Estat {
 		}
 	}
 	
-	/**Shuffle senzill que aleatoritza una llista d'enters fent swaps entre els elements. Implementat
-	 * amb l'algorisme de Knuth shuffle.*/
-	private void shuffle(int[] v) {
-		for(int i = 0; i < v.length; ++i) swap(v, i, random.nextInt(i+v.length-i));
+	/**TODO: Encara hem de pensar una solucio inicial greedy.*/
+	private void generaSolucioInicial2() {
+		
 	}
+
 	
-	/**Swaps the elements i and j in v*/
-	private void swap(int[] v, int i, int j) {
-		int x = v[i];
-		v[i] = v[j];
-		v[j] = x;
-	}
-	
-	/**Constructor de còpia*/
-	public Estat(Estat e) {
-		this.context = e.context;
-		this.helicopters = new ArrayList<ArrayList<Grupo>>(e.helicopters.size());
-		//No fem deep copy perquè no ens interessa clonar grups, només punters a grups.
-		for(int i = 0; i < helicopters.size(); ++i) this.helicopters.set(i, (ArrayList<Grupo>)e.helicopters.get(i).clone());
-	}
+	/*  =======================================================
+	  
+	                      Operadors de cerca
+	  
+	    =======================================================
+	 */
 	
 	/**Intercanvia els grups i-èssim i j-èssim dels helicòpters H1 i H2
 	 * @pre H1,H2 inRange(helicopters); Gi inRange(helicopters[H1]); Gj inRange[helicopters[H2])
@@ -89,6 +110,36 @@ public class Estat {
 	public Grupo getGrup(int H, int G) {
 		return helicopters.get(H).get(G);		
 	}
+
+
+	/*  =======================================================
+	  
+	                     Funcions d'utilitat
+	  
+	    =======================================================
+	 */
+	
+	/**Shuffle senzill que aleatoritza una llista d'enters fent swaps entre els elements. Implementat
+	 * amb l'algorisme de Knuth shuffle.*/
+	private void shuffle(int[] v) {
+		for(int i = 0; i < v.length; ++i) swap(v, i, random.nextInt(i+v.length-i));
+	}
+	
+	/**Intercanvia els elements i-èssim i j-èssim de v
+	 * @pre i,j inRange(v)*/
+	private void swap(int[] v, int i, int j) {
+		int x = v[i];
+		v[i] = v[j];
+		v[j] = x;
+	}
+	
+
+	/*  =======================================================
+	  
+                             Overrides
+	  
+	    =======================================================
+	 */
 	
 	@Override
 	public String toString() {
