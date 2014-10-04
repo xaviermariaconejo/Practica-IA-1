@@ -79,6 +79,9 @@ public class Estat {
 	private void recalcularTemps2(int H, int G) {
 		Grupo g = helicopters.get(H).get(G);
 		temps[H] = temps[H] + g.getPrioridad()*g.getNPersonas();
+		// i en teoria lo de la altre funcio pero en comptes de restar en suma
+		// que no he fet copy paste pq tic pensat reaprofitar codi entre les dos
+		// funcions, pero com encara no se quans "if" i histories hi haura no ho puc fer encara
 	}
 	
 	@Override
