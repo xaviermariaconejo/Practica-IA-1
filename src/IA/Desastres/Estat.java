@@ -19,7 +19,7 @@ public class Estat {
 	/**Guarda, per cada helicòpter, la llista de grups que ha de rescatar*/
 	private ArrayList<ArrayList<Grupo>> helicopters;
 	
-	/**Constructora
+	/**Constructora buida. S'ha de cridar el generador d'estats inicials després d'aquest mètode.
 	 * @param context El context del problema per a aquest estat.*/
 	public Estat(ContextEstat context) {
 		this.context = context;
@@ -30,19 +30,13 @@ public class Estat {
 		for(int i = 0; i < nH; ++i) helicopters.set(i, new ArrayList<Grupo>());
 	}
 	
-	/**Constructora de còpia*/
+	/**Constructora de còpia. Crea una còpia de l'estat proporcionat.
+	 * @param e L'estat anterior*/
 	public Estat(Estat e) {
 		this.context = e.context;
 		this.helicopters = new ArrayList<ArrayList<Grupo>>(e.helicopters.size());
 		//No fem deep copy perquè no ens interessa clonar grups, només punters a grups.
 		for(int i = 0; i < helicopters.size(); ++i) this.helicopters.set(i, (ArrayList<Grupo>)e.helicopters.get(i).clone());
-	}
-	
-	public void generaSoucioInicial(TipusInicial t) {
-		switch(t) {
-		case RANDOM: generaSolucioInicial1(); break;
-		case GREEDY: generaSolucioInicial2(); break;
-		}
 	}
 	
 	
@@ -53,8 +47,16 @@ public class Estat {
 	    =======================================================
 	 */
 	
+	/**Estableix la solució que guarda aquest estat*/
+	public void generaSoucioInicial(TipusInicial t) {
+		switch(t) {
+		case RANDOM: generaSolucioInicial1(); break;
+		case GREEDY: generaSolucioInicial2(); break;
+		}
+	}
+	
 	/**Genera una solució inicial aleatoria amb els grups distribuïts equitativament entre els helicòpters
-	 * @pre helicopters inicialitzat.*/
+	 * @pre "helicopters" inicialitzat.*/
 	private void generaSolucioInicial1() {
 		int H = 0;
 		int[] l = new int[helicopters.size()]; for(int i = 0; i < l.length; ++i) l[i] = i;
@@ -74,7 +76,8 @@ public class Estat {
 		}
 	}
 	
-	/**TODO: Encara hem de pensar una solucio inicial greedy.*/
+	/**TODO: Encara hem de pensar una solucio inicial greedy.
+	 * @pre "helicopters" inicialitzat.*/
 	private void generaSolucioInicial2() {
 		
 	}
