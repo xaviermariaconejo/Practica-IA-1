@@ -35,15 +35,20 @@ public class Estat {
 	}
 	
 	/**Constructora de còpia. Crea una còpia de l'estat proporcionat.
-	 * @param e L'estat anterior
-	 * @deprecated*/
+	 * @param e L'estat anterior*/
 	public Estat(Estat e) {
 		this.context = e.context;
 		this.helicopters = new ArrayList<ArrayList<ArrayList<Grupo>>>(e.helicopters.size());
-		//No fem deep copy perquè no ens interessa clonar grups, només punters a grups.
-		//for(int i = 0; i < helicopters.size(); ++i) this.helicopters.set(i, (ArrayList<Grupo>)e.helicopters.get(i).clone());
-		this.temps = new double[e.temps.length];
-		System.arraycopy(e.temps,0,temps,0,temps.length); 
+		int i = 0;
+		for(ArrayList<ArrayList<Grupo>> h : e.helicopters) {
+			this.helicopters.set(i, (ArrayList<ArrayList<Grupo>>) h.clone());
+			int j = 0;
+			for(ArrayList<Grupo> v : e.helicopters.get(i)) {
+				this.helicopters.get(i).set(j, (ArrayList<Grupo>) v.clone());
+				++j;
+			}
+			++i;
+		}
 	}
 	
 	
