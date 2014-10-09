@@ -144,12 +144,8 @@ public class Estat {
 	
 	public void intercambiaViatges (int H1, int Vi, int H2, int Vj) {
 		ArrayList<Grupo> i = helicopters.get(H1).get(Vi);
-		//recalcularTemps1(H1, Gi);
-		//recalcularTemps1(H2, Gj);
 		helicopters.get(H1).set(Vi, helicopters.get(H2).get(Vj));
 		helicopters.get(H2).set(Vj, i);
-		//recalcularTemps2(H1, Gj);
-		//recalcularTemps2(H2, Gi);
 	}
 	
 	public boolean intercambiaGrups (int Hi, int Vi, int Gi, int Hj, int Vj, int Gj) {
@@ -157,12 +153,12 @@ public class Estat {
 		Grupo j = helicopters.get(Hj).get(Vj).get(Gj);
 		if(viajeLleno(helicopters.get(Hj).get(Vj),i)) return false;
 		if(viajeLleno(helicopters.get(Hi).get(Vi),j)) return false;
-		//recalcularTemps1(H1, Gi);
-		//recalcularTemps1(H2, Gj);
+		recalcularTemps(Hi, Vi, Gi, -1);
+		recalcularTemps(Hj, Vj, Gj, -1);
 		helicopters.get(Hi).get(Vi).set(Vi, helicopters.get(Hj).get(Vj).get(Gj));
 		helicopters.get(Hj).get(Vj).set(Gj, i);
-		//recalcularTemps2(H1, Gj);
-		//recalcularTemps2(H2, Gi);
+		recalcularTemps(Hi, Vi, Gj, 1);
+		recalcularTemps(Hj, Vj, Gi, 1);
 		return true;
 	}
 	
@@ -171,17 +167,21 @@ public class Estat {
 		Grupo i = helicopters.get(Hi).get(Vi).get(G);
 		if (helicopters.get(Hj).get(Vj).size() == 3) return false;
 		if (viajeLleno(helicopters.get(Hj).get(Vj), i)) return false;
+		recalcularTemps(Hi, Vi, G, -1);
 		helicopters.get(Hj).get(Vj).add(i);
 		helicopters.get(Hi).get(Vj).remove(G);
+		recalcularTemps(Hj, Vj, G, 1);
 		return true;
 	}
 	
 	public void mouGrupNouViatge(int G, int Hi, int Vi, int Hj) {
 		Grupo i = helicopters.get(Hi).get(Vi).get(G);
+		recalcularTemps(Hi, Vi, G, -1);
 		ArrayList<Grupo> viatge = new ArrayList<Grupo>(3);
 		viatge.add(i);
 		helicopters.get(Hj).add(viatge);
 		helicopters.get(Hi).get(Vi).remove(G);
+		recalcularTemps(Hj,  helicopters.get(Hj).size() - 1, 0, 1);
 	}
 	
 	private boolean viajeLleno(ArrayList<Grupo> V, Grupo gr) {
@@ -193,26 +193,32 @@ public class Estat {
 		return true;
 	}
 	
-	private void recalcularTemps1(int H, int G) {
-		/*Grupo g = helicopters.get(H).get(G);
-		temps[H] = temps[H] - g.getPrioridad()*g.getNPersonas();
-		Grupo aux = helicopters.get(H).get(G - 1);
+	private void recalcularTemps(int H, int V, int G, int X) {
+		Grupo g = helicopters.get(H).get(V).get(G);
 		int x = g.getCoordX();
 		int y = g.getCoordY();
-		int a1 = aux.getCoordX() - x;
-		int b1 = aux.getCoordY() - y;
-		aux = helicopters.get(H).get(G + 1);
-		int a2 = aux.getCoordX() - x;
-		int b2 = aux.getCoordY() - y;
-		temps[H] = temps[H] - (1/1.66)*Math.sqrt((a1*a1) + (b1*b1)) - (1/1.66)*Math.sqrt((a2*a2) + (b2*b2));*/		
-	}
-	
-	private void recalcularTemps2(int H, int G) {
-		/*Grupo g = helicopters.get(H).get(G);
-		temps[H] = temps[H] + g.getPrioridad()*g.getNPersonas();*/
-		// i en teoria lo de la altre funcio pero en comptes de restar en suma
-		// que no he fet copy paste pq tic pensat reaprofitar codi entre les dos
-		// funcions, pero com encara no se quans "if" i histories hi haura no ho puc fer encara
+		int a1, a2, b1, b2;
+		int nH = context.getCentros().get(0).getNHelicopteros();
+		Centro c = context.getCentros().get(H/nH);
+		if (G > 0) {
+			Grupo aux1 = helicopters.get(H).get(V).get(G - 1);
+			a1 = aux1.getCoordX() - x;
+			b1 = aux1.getCoordY() - y;
+		}
+		else {
+			a1 = c.getCoordX() - x;
+			b1 = c.getCoordY() - y;
+		}
+		if (G < helicopters.get(H).get(V).size() - 1) {
+			Grupo aux2 = helicopters.get(H).get(V).get(G + 1);
+			a2 = aux2.getCoordX() - x;
+			b2 = aux2.getCoordY() - y;
+		}
+		else {
+			a2 = c.getCoordX() - x;
+			b2 = c.getCoordY() - y;
+		}
+		temps = (float) (temps + X*((1/1.66)*Math.sqrt((a1*a1) + (b1*b1)) + (1/1.66)*Math.sqrt((a2*a2) + (b2*b2))));	
 	}
 	
 	/**Retorna el grup G-èssim de l'helicòpter H.
