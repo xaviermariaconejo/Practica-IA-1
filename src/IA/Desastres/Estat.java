@@ -113,7 +113,7 @@ public class Estat {
 	    =======================================================
 	 */
 	
-	public void intercambiaViatgesFora (int H1, int Vi, int H2, int Vj) {
+	public void intercambiaViatges (int H1, int Vi, int H2, int Vj) {
 		ArrayList<Grupo> i = helicopters.get(H1).get(Vi);
 		//recalcularTemps1(H1, Gi);
 		//recalcularTemps1(H2, Gj);
@@ -123,22 +123,44 @@ public class Estat {
 		//recalcularTemps2(H2, Gi);
 	}
 	
-	public void intercambiaGrups (int Hi, int Vi, int Gi, int Hj, int Vj, int Gj) {
+	public boolean intercambiaGrups (int Hi, int Vi, int Gi, int Hj, int Vj, int Gj) {
 		Grupo i = helicopters.get(Hi).get(Vi).get(Gi);
+		Grupo j = helicopters.get(Hj).get(Vj).get(Gj);
+		if(viajeLleno(helicopters.get(Hj).get(Vj),i)) return false;
+		if(viajeLleno(helicopters.get(Hi).get(Vi),j)) return false;
 		//recalcularTemps1(H1, Gi);
 		//recalcularTemps1(H2, Gj);
 		helicopters.get(Hi).get(Vi).set(Vi, helicopters.get(Hj).get(Vj).get(Gj));
 		helicopters.get(Hj).get(Vj).set(Gj, i);
 		//recalcularTemps2(H1, Gj);
 		//recalcularTemps2(H2, Gi);
+		return true;
 	}
 	
 	
 	public boolean mouGrups (int G, int Hi, int Vi, int Hj, int Vj) {
 		Grupo i = helicopters.get(Hi).get(Vi).get(G);
 		if (helicopters.get(Hj).get(Vj).size() == 3) return false;
+		if (viajeLleno(helicopters.get(Hj).get(Vj), i)) return false;
 		helicopters.get(Hj).get(Vj).add(i);
 		helicopters.get(Hi).get(Vj).remove(G);
+		return true;
+	}
+	
+	public void mouGrupNouViatge(int G, int Hi, int Vi, int Hj) {
+		Grupo i = helicopters.get(Hi).get(Vi).get(G);
+		ArrayList<Grupo> viatge = new ArrayList<Grupo>(3);
+		viatge.add(i);
+		helicopters.get(Hj).add(viatge);
+		helicopters.get(Hi).get(Vi).remove(G);
+	}
+	
+	private boolean viajeLleno(ArrayList<Grupo> V, Grupo gr) {
+		int capacidad = gr.getNPersonas();
+		for(Grupo g : V) {
+			capacidad += g.getNPersonas();	
+			if(capacidad > 15) return false;
+		}
 		return true;
 	}
 	
