@@ -128,7 +128,8 @@ public class Estat {
 				int b1 = v.get(0).getCoordY() - y;
 				int a2 = v.get(v.size() - 1).getCoordX() - x;
 				int b2 = v.get(v.size() - 1).getCoordY() - y;
-				temps = (float) (temps + (1/1.66)*Math.sqrt((a1*a1) + (b1*b1)) + (1/1.66)*Math.sqrt((a2*a2) + (b2*b2)) + v.get(v.size() - 1).getPrioridad()*v.get(v.size() - 1).getNPersonas());
+				temps = (float) (temps + (1/1.66)*Math.sqrt((a1*a1) + (b1*b1))
+				+ (1/1.66)*Math.sqrt((a2*a2) + (b2*b2)) + v.get(v.size() - 1).getPrioridad()*v.get(v.size() - 1).getNPersonas());
 			}
 		}
 	}
