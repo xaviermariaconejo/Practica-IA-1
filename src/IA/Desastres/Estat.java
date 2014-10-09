@@ -17,7 +17,7 @@ public class Estat {
 	private Random random;
 	
 	/**Guarda, per cada helic�pter, el temps total que triga en realitzar tots els seus viatges en minuts*/
-	private double[] temps;
+	private float temps;
 	
 	/**Guarda, per cada helicòpter, la llista de viatges amb els grups que ha de rescatar*/
 	private ArrayList<ArrayList<ArrayList<Grupo>>> helicopters;
@@ -31,7 +31,7 @@ public class Estat {
 		int nH = context.getCentros().size()*context.getCentros().get(0).getNHelicopteros();
 		this.helicopters = new ArrayList<ArrayList<ArrayList<Grupo>>>(nH);
 		for(int i = 0; i < nH; ++i) helicopters.set(i, new ArrayList<ArrayList<Grupo>>());
-		this.temps = new double[nH];
+		this.temps = 0.0f;
 	}
 	
 	/**Constructora de còpia. Crea una còpia de l'estat proporcionat.
@@ -49,6 +49,7 @@ public class Estat {
 			}
 			++i;
 		}
+		this.temps = 0.0f;
 	}
 	
 	
@@ -65,6 +66,7 @@ public class Estat {
 		case RANDOM: generaSolucioInicial1(); break;
 		case GREEDY: generaSolucioInicial2(); break;
 		}
+		calcularTemps();
 	}
 	
 	/**Genera una solució inicial aleatoria amb els grups distribuïts equitativament entre els helicòpters
@@ -103,6 +105,33 @@ public class Estat {
 	 * @pre "helicopters" inicialitzat.*/
 	private void generaSolucioInicial2() {
 		
+	}
+	
+	private void calcularTemps() {
+		int nH = context.getCentros().get(0).getNHelicopteros();
+		for(int h = 0; h < helicopters.size(); ++h) {
+			for(ArrayList<Grupo> v :  helicopters.get(h)) {
+				for(int i = 0; i < v.size() - 1; ++i) {
+					Grupo g = v.get(i);
+					temps = temps + g.getPrioridad()*g.getNPersonas();
+					Grupo aux = v.get(i + 1);
+					int x = g.getCoordX();
+					int y = g.getCoordY();
+					int a = aux.getCoordX() - x;
+					int b = aux.getCoordY() - y;
+					temps = (float) (temps + (1/1.66)*Math.sqrt((a*a) + (b*b)));
+				}
+				Centro c = context.getCentros().get(h/nH);
+				int x = c.getCoordX();
+				int y = c.getCoordY();
+				int a1 = v.get(0).getCoordX() - x;
+				int b1 = v.get(0).getCoordY() - y;
+				int a2 = v.get(v.size() - 1).getCoordX() - x;
+				int b2 = v.get(v.size() - 1).getCoordY() - y;
+				temps = (float) (temps + (1/1.66)*Math.sqrt((a1*a1) + (b1*b1))
+				+ (1/1.66)*Math.sqrt((a2*a2) + (b2*b2)) + v.get(v.size() - 1).getPrioridad()*v.get(v.size() - 1).getNPersonas());
+			}
+		}
 	}
 
 	
