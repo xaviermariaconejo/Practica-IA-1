@@ -7,6 +7,9 @@ import java.util.Random;
  * @author Josep Sánchez Ferreres*/
 public class Estat {
 	
+	/**La capacitat dels helicòpters*/
+	private static final int CAPACITAT_HELICOPTERS=15;
+	
 	/**Tipus de solució inicial*/
 	static enum TipusInicial {RANDOM, GREEDY};
 	
@@ -30,7 +33,7 @@ public class Estat {
 		//Assumim que cada centre té el mateix nombre d'helicòpters.
 		int nH = context.getCentros().size()*context.getCentros().get(0).getNHelicopteros();
 		this.helicopters = new ArrayList<ArrayList<ArrayList<Grupo>>>(nH);
-		for(int i = 0; i < nH; ++i) helicopters.set(i, new ArrayList<ArrayList<Grupo>>());
+		for(int i = 0; i < nH; ++i) helicopters.add(new ArrayList<ArrayList<Grupo>>());
 		this.temps = 0.0f;
 	}
 	
@@ -72,17 +75,18 @@ public class Estat {
 	/**Genera una solució inicial aleatoria amb els grups distribuïts equitativament entre els helicòpters
 	 * @pre "helicopters" inicialitzat.*/
 	private void generaSolucioInicial1() {
-		int H = 0;
 		int[] l = new int[helicopters.size()]; for(int i = 0; i < l.length; ++i) l[i] = i;
 		shuffle(l);
 		int n = l.length-1;
 		Grupos grupos = context.getGrups();
-		//invariant: n apunta a l'ultim element randomitzat de la llista
+		//invariant: n apunta a l'ultim element randomitzat de la llista. Tots els viatges
+		//			 de tots els helicòpters contenen menys de 3 grups i menys de 15 persones.
 		for(Grupo g : grupos) {
 			//Afegim grup a l'helicopter
 			int h = l[0]; 
 			int lastV = helicopters.get(h).size()-1;
-			if(lastV < 0 && helicopters.get(h).get(lastV).size() < 2) {
+			//lastV conté l'índex de lúltim viatge de l'helicòpter si en té algun
+			if(lastV >= 0 && helicopters.get(h).get(lastV).size() < 2 && !moureIncompatible(helicopters.get(h).get(lastV),g)) {
 				helicopters.get(h).get(lastV).add(g);
 			}
 			else {
@@ -151,8 +155,8 @@ public class Estat {
 	public boolean intercambiaGrups (int Hi, int Vi, int Gi, int Hj, int Vj, int Gj) {
 		Grupo i = helicopters.get(Hi).get(Vi).get(Gi);
 		Grupo j = helicopters.get(Hj).get(Vj).get(Gj);
-		if(viajeLleno(helicopters.get(Hj).get(Vj),i)) return false;
-		if(viajeLleno(helicopters.get(Hi).get(Vi),j)) return false;
+		if(swapIncompatible(helicopters.get(Hj).get(Vj),i,j)) return false;
+		if(swapIncompatible(helicopters.get(Hi).get(Vi),j,i)) return false;
 		recalcularTemps(Hi, Vi, Gi, -1);
 		recalcularTemps(Hj, Vj, Gj, -1);
 		helicopters.get(Hi).get(Vi).set(Vi, helicopters.get(Hj).get(Vj).get(Gj));
@@ -166,7 +170,7 @@ public class Estat {
 	public boolean mouGrups (int G, int Hi, int Vi, int Hj, int Vj) {
 		Grupo i = helicopters.get(Hi).get(Vi).get(G);
 		if (helicopters.get(Hj).get(Vj).size() == 3) return false;
-		if (viajeLleno(helicopters.get(Hj).get(Vj), i)) return false;
+		if (moureIncompatible(helicopters.get(Hj).get(Vj), i)) return false;
 		recalcularTemps(Hi, Vi, G, -1);
 		helicopters.get(Hj).get(Vj).add(i);
 		helicopters.get(Hi).get(Vj).remove(G);
@@ -184,13 +188,22 @@ public class Estat {
 		recalcularTemps(Hj,  helicopters.get(Hj).size() - 1, 0, 1);
 	}
 	
-	private boolean viajeLleno(ArrayList<Grupo> V, Grupo gr) {
+	private boolean moureIncompatible(ArrayList<Grupo> V, Grupo gr) {
 		int capacidad = gr.getNPersonas();
 		for(Grupo g : V) {
 			capacidad += g.getNPersonas();	
-			if(capacidad > 15) return false;
+			if(capacidad > CAPACITAT_HELICOPTERS) return true;
 		}
-		return true;
+		return false;
+	}
+	
+	private boolean swapIncompatible(ArrayList<Grupo> V, Grupo Gout, Grupo Gin) {
+		int capacidad = Gin.getNPersonas() - Gout.getNPersonas();
+		for(Grupo g : V) {
+			capacidad += g.getNPersonas();	
+			if(capacidad > CAPACITAT_HELICOPTERS) return true;
+		}
+		return false;
 	}
 	
 	private void recalcularTemps(int H, int V, int G, int X) {
@@ -249,6 +262,16 @@ public class Estat {
 		v[j] = x;
 	}
 	
+	/**Retorna l'índex de g al vector de grups que hi ha a context, o -1 si no el troba. Notar que la 
+	 * complexitat d'aquesta operació és O(|G|) (on G és el conjunt de grups).*/
+	private int buscaGrupIndex(Grupo g) {
+		Grupos gs = context.getGrups();
+		for(int i = 0; i < gs.size(); ++i) {
+			if(g == gs.get(i)) return i;
+		}
+		return -1;
+	}
+	
 
 	/*  =======================================================
 	  
@@ -257,10 +280,24 @@ public class Estat {
 	    =======================================================
 	 */
 	
+	/**Imprimeix la sol·lució completa que representa aquest estat com un string.*/
 	@Override
 	public String toString() {
-		//TODO: Retornar una representació en string de l'estat.
-		return "LOL";
+		String ret="";
+		int i = 0; for(ArrayList<ArrayList<Grupo>> h : helicopters) {
+			ret += "H"+i+": ";
+			for(ArrayList<Grupo> v : h) {
+				ret += "{"+buscaGrupIndex(v.get(0));
+				for(int j = 1; j < v.size(); ++j) {
+					ret += ", "+buscaGrupIndex(v.get(j));
+				}
+				ret += "}";
+			}
+			++i;
+			ret += "\n";
+		}
+		return ret;
+		
 	}
 	
 }

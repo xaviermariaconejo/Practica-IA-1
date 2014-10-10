@@ -13,7 +13,7 @@ public class ContextEstat {
 	/**Vector de centres de rescat amb helicòpters*/
 	private Centros centres;
 	
-	private ContextEstat(Grupos grups, Centros centres) {
+	public ContextEstat(Grupos grups, Centros centres) {
 		this.grups = grups;
 		this.centres = centres;
 	}
