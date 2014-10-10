@@ -167,7 +167,7 @@ public class Estat {
 		if(swapIncompatible(helicopters.get(Hi).get(Vi),j,i)) return false;
 		recalcularTemps(Hi, Vi, Gi, -1);
 		recalcularTemps(Hj, Vj, Gj, -1);
-		helicopters.get(Hi).get(Vi).set(Vi, helicopters.get(Hj).get(Vj).get(Gj));
+		helicopters.get(Hi).get(Vi).set(Gi, j);
 		helicopters.get(Hj).get(Vj).set(Gj, i);
 		recalcularTemps(Hi, Vi, Gj, 1);
 		recalcularTemps(Hj, Vj, Gi, 1);
