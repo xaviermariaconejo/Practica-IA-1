@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**Representa la part dinàmica de l'estat del problema, és a dir, codifica una solució, i implementa els operadors de cerca.
- * @author Josep Sánchez Ferreres*/
+ * @author Josep Sánchez Ferreres
+ * @author Xavier Conejo*/
 public class Estat {
 	
 	/**La capacitat dels helicòpters*/
 	private static final int CAPACITAT_HELICOPTERS=15;
+
+	/**El màxim nombre de grups que pot portar un helicopter en un viatge*/
+	private static final int GRUPS_PER_HELICOPTER=15;
 	
 	/**Tipus de solució inicial*/
 	static enum TipusInicial {RANDOM, GREEDY};
@@ -19,7 +23,7 @@ public class Estat {
 	/**Generador de nombres aleatoris*/
 	private Random random;
 	
-	/**Guarda, per cada helic�pter, el temps total que triga en realitzar tots els seus viatges en minuts*/
+	/**Guarda, per cada helicòpter, el temps total que triga en realitzar tots els seus viatges en minuts*/
 	private float temps;
 	
 	/**Guarda, per cada helicòpter, la llista de viatges amb els grups que ha de rescatar*/
@@ -86,11 +90,11 @@ public class Estat {
 			int h = l[0]; 
 			int lastV = helicopters.get(h).size()-1;
 			//lastV conté l'índex de lúltim viatge de l'helicòpter si en té algun
-			if(lastV >= 0 && helicopters.get(h).get(lastV).size() < 2 && !moureIncompatible(helicopters.get(h).get(lastV),g)) {
+			if(lastV >= 0 && helicopters.get(h).get(lastV).size() < GRUPS_PER_HELICOPTER-1 && !moureIncompatible(helicopters.get(h).get(lastV),g)) {
 				helicopters.get(h).get(lastV).add(g);
 			}
 			else {
-				ArrayList<Grupo> nv = new ArrayList<Grupo>(3);
+				ArrayList<Grupo> nv = new ArrayList<Grupo>(GRUPS_PER_HELICOPTER);
 				nv.add(g);
 				helicopters.get(h).add(nv);
 			}
@@ -169,7 +173,7 @@ public class Estat {
 	
 	public boolean mouGrups (int G, int Hi, int Vi, int Hj, int Vj) {
 		Grupo i = helicopters.get(Hi).get(Vi).get(G);
-		if (helicopters.get(Hj).get(Vj).size() == 3) return false;
+		if (helicopters.get(Hj).get(Vj).size() == GRUPS_PER_HELICOPTER) return false;
 		if (moureIncompatible(helicopters.get(Hj).get(Vj), i)) return false;
 		recalcularTemps(Hi, Vi, G, -1);
 		helicopters.get(Hj).get(Vj).add(i);
@@ -181,7 +185,7 @@ public class Estat {
 	public void mouGrupNouViatge(int G, int Hi, int Vi, int Hj) {
 		Grupo i = helicopters.get(Hi).get(Vi).get(G);
 		recalcularTemps(Hi, Vi, G, -1);
-		ArrayList<Grupo> viatge = new ArrayList<Grupo>(3);
+		ArrayList<Grupo> viatge = new ArrayList<Grupo>(GRUPS_PER_HELICOPTER);
 		viatge.add(i);
 		helicopters.get(Hj).add(viatge);
 		helicopters.get(Hi).get(Vi).remove(G);
