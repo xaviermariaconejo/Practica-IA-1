@@ -10,7 +10,7 @@ public class TestMain {
 		int i = 0; for(Grupo g : grupos) printGrupo(g, i++);
 		Centros c = new Centros(5,2,1234);
 		ContextEstat cntx = new ContextEstat(grupos,c);
-		Estat e = new Estat(cntx);
+		Estat e = new Estat(cntx, 1234);
 		e.generaSoucioInicial(TipusInicial.RANDOM);
 		System.out.println(e.toString());
 	}

@@ -31,9 +31,9 @@ public class Estat {
 	
 	/**Constructora buida. S'ha de cridar el generador d'estats inicials després d'aquest mètode.
 	 * @param context El context del problema per a aquest estat.*/
-	public Estat(ContextEstat context) {
+	public Estat(ContextEstat context, long seed) {
 		this.context = context;
-		random = new Random();
+		random = new Random(seed);
 		//Assumim que cada centre té el mateix nombre d'helicòpters.
 		int nH = context.getCentros().size()*context.getCentros().get(0).getNHelicopteros();
 		this.helicopters = new ArrayList<ArrayList<ArrayList<Grupo>>>(nH);
@@ -150,12 +150,16 @@ public class Estat {
 	    =======================================================
 	 */
 	
+	/**Intercambia el viatge Vi de l'helicòpter Hi al viatge Vj de l'helicopter Hj
+	 * @pre Hi, Hj inRange(helicopters); Vi inRange(helicopters[Hi]); Vj inRange(helicopters[Hj]*/
 	public void intercambiaViatges (int H1, int Vi, int H2, int Vj) {
 		ArrayList<Grupo> i = helicopters.get(H1).get(Vi);
 		helicopters.get(H1).set(Vi, helicopters.get(H2).get(Vj));
 		helicopters.get(H2).set(Vj, i);
 	}
 	
+	/**Intercanvia el grup G del viatge Vi de l'helicòpter Hi pel grup Gj del viatge Vj de l'helicopter Hj
+	 * @pre Hi, Hj inRange(helicopters); Vi inRange(helicopters[Hi]); Vj inRange(helicopters[Hj]*/
 	public boolean intercambiaGrups (int Hi, int Vi, int Gi, int Hj, int Vj, int Gj) {
 		Grupo i = helicopters.get(Hi).get(Vi).get(Gi);
 		Grupo j = helicopters.get(Hj).get(Vj).get(Gj);
@@ -170,7 +174,8 @@ public class Estat {
 		return true;
 	}
 	
-	
+	/**Mou el grup G del viatge Vi de l'helicòpter Hi al viatge Vj de l'helicopter Hj
+	 * @pre Hi, Hj inRange(helicopters); Vi inRange(helicopters[Hi]); Vj inRange(helicopters[Hj]*/
 	public boolean mouGrups (int G, int Hi, int Vi, int Hj, int Vj) {
 		Grupo i = helicopters.get(Hi).get(Vi).get(G);
 		if (helicopters.get(Hj).get(Vj).size() == GRUPS_PER_HELICOPTER) return false;
@@ -182,16 +187,30 @@ public class Estat {
 		return true;
 	}
 	
+	/**Mou el grup G del viatge Vi de l'helicòpter Hi en un nou viatge de
+	 * l'helicopter j-èssim
+	 * @pre Hi,Hj inRange(helicopters); Vi inRange(helicopters[Hi]; G inRange(helicopters[Hi][Vi])*/
 	public void mouGrupNouViatge(int G, int Hi, int Vi, int Hj) {
 		Grupo i = helicopters.get(Hi).get(Vi).get(G);
 		recalcularTemps(Hi, Vi, G, -1);
-		ArrayList<Grupo> viatge = new ArrayList<Grupo>(GRUPS_PER_HELICOPTER);
+		ArrayList<Grupo> viatge = new ArrayList<Grupo>(3);
 		viatge.add(i);
 		helicopters.get(Hj).add(viatge);
 		helicopters.get(Hi).get(Vi).remove(G);
 		recalcularTemps(Hj,  helicopters.get(Hj).size() - 1, 0, 1);
 	}
 	
+	
+	/*  =======================================================
+	  
+	                     Funcions d'utilitat
+	  
+	    =======================================================
+	 */
+	
+	
+	/**Retorna fals si en afegir gr a V el viatge té massa grups i/o persones.
+	 * @pre gr !in V*/
 	private boolean moureIncompatible(ArrayList<Grupo> V, Grupo gr) {
 		int capacidad = gr.getNPersonas();
 		for(Grupo g : V) {
@@ -200,7 +219,8 @@ public class Estat {
 		}
 		return false;
 	}
-	
+	/**Retorna fals si en ficar Gin i treure Gout de V aquest viatge queda ple. cert altrament
+	 * @pre Gout in V*/
 	private boolean swapIncompatible(ArrayList<Grupo> V, Grupo Gout, Grupo Gin) {
 		int capacidad = Gin.getNPersonas() - Gout.getNPersonas();
 		for(Grupo g : V) {
@@ -244,14 +264,6 @@ public class Estat {
 		return helicopters.get(H).get(G);	
 	}
 
-
-	/*  =======================================================
-	  
-	                     Funcions d'utilitat
-	  
-	    =======================================================
-	 */
-	
 	/**Shuffle senzill que aleatoritza una llista d'enters fent swaps entre els elements. Implementat
 	 * amb l'algorisme de Knuth shuffle.*/
 	private void shuffle(int[] v) {
