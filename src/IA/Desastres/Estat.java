@@ -13,6 +13,8 @@ public class Estat {
 
 	/**El màxim nombre de grups que pot portar un helicopter en un viatge*/
 	private static final int GRUPS_PER_HELICOPTER=15;
+
+	private static final double INV_VEL_HEL = 0.0024;
 	
 	/**Tipus de solució inicial*/
 	static enum TipusInicial {RANDOM, GREEDY};
@@ -170,7 +172,7 @@ public class Estat {
 					int y = g.getCoordY();
 					int a = aux.getCoordX() - x;
 					int b = aux.getCoordY() - y;
-					temps = (float) (temps + (1/1.66)*Math.sqrt((a*a) + (b*b)));
+					temps = (float) (temps + (INV_VEL_HEL)*Math.sqrt((a*a) + (b*b)));
 				}
 				Centro c = context.getCentros().get(h/nH);
 				int x = c.getCoordX();
@@ -179,8 +181,8 @@ public class Estat {
 				int b1 = v.get(0).getCoordY() - y;
 				int a2 = v.get(v.size() - 1).getCoordX() - x;
 				int b2 = v.get(v.size() - 1).getCoordY() - y;
-				temps = (float) (temps + (1/1.66)*Math.sqrt((a1*a1) + (b1*b1))
-				+ (1/1.66)*Math.sqrt((a2*a2) + (b2*b2)) + v.get(v.size() - 1).getPrioridad()*v.get(v.size() - 1).getNPersonas());
+				temps = (float) (temps + (INV_VEL_HEL)*Math.sqrt((a1*a1) + (b1*b1))
+				+ (INV_VEL_HEL)*Math.sqrt((a2*a2) + (b2*b2)) + v.get(v.size() - 1).getPrioridad()*v.get(v.size() - 1).getNPersonas());
 			}
 		}
 	}
@@ -228,7 +230,7 @@ public class Estat {
 		helicopters.get(Hi).get(Vi).remove(G);
 		if(helicopters.get(Hi).get(Vi).size() == 0) {
 			helicopters.get(Hi).remove(Vi);
-			if(Hi == Hj) --Vj; //Parche
+			if(Hi == Hj && Vj > Vi) --Vj; //Parche del parche
 		}
 		recalcularTemps(Hj, Vj, helicopters.get(Hj).get(Vj).size()-1, 1);
 		return true;
@@ -311,7 +313,7 @@ public class Estat {
 			a2 = c.getCoordX() - x;
 			b2 = c.getCoordY() - y;
 		}
-		temps = (float) (temps + X*((1/1.66)*Math.sqrt((a1*a1) + (b1*b1)) + (1/1.66)*Math.sqrt((a2*a2) + (b2*b2))));	
+		temps = (float) (temps + X*((INV_VEL_HEL)*Math.sqrt((a1*a1) + (b1*b1)) + (INV_VEL_HEL)*Math.sqrt((a2*a2) + (b2*b2))));	
 	}
 	
 	/**Retorna el grup G-èssim de l'helicòpter H.

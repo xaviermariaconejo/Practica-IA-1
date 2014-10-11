@@ -23,7 +23,7 @@ public class Main {
 			ContextEstat cntx = new ContextEstat(grupos,c, false);
 			Estat e_ini = new Estat(cntx, seed);
 			e_ini.generaSoucioInicial(TipusInicial.GREEDY);
-			Problem problem = new Problem(e_ini, new GeneradorEstats(), new EstatFinal());
+			Problem problem = new Problem(e_ini, new GeneradorEstats(), new EstatFinal(), new FuncioHeuristica1());
 			Search search = new HillClimbingSearch();
 			SearchAgent agent = new SearchAgent(problem, search);
 			printActions(agent.getActions());
