@@ -13,6 +13,11 @@ public class TestMain {
 		Centros c = new Centros(5,2,1234);
 		ContextEstat cntx = new ContextEstat(grupos,c, false);
 		Estat e = new Estat(cntx, 1234);
+		e.generaSoucioInicial(TipusInicial.GREEDY);
+		printDebug(e);
+		System.out.println(e.toString());
+		System.out.println(e.mouGrups(0, 2, 1, 6, 0));
+		System.out.println(e.toString());
 		e.generaSoucioInicial(TipusInicial.RANDOM);
 		printDebug(e);
 		System.out.println(e.toString());
