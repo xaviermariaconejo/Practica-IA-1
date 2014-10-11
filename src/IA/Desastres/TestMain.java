@@ -14,15 +14,9 @@ public class TestMain {
 		ContextEstat cntx = new ContextEstat(grupos,c, false);
 		Estat e = new Estat(cntx, 1234);
 		e.generaSoucioInicial(TipusInicial.GREEDY);
-		printDebug(e);
+		Estat e1 = new Estat(e);
 		System.out.println(e.toString());
-		System.out.println(e.mouGrups(0, 2, 1, 6, 0));
-		System.out.println(e.getTempsViatges());
-		e.generaSoucioInicial(TipusInicial.RANDOM);
-		printDebug(e);
-		System.out.println(e.toString());
-		System.out.println(e.mouGrups(0, 2, 1, 6, 0));
-		System.out.println(e.toString());
+		System.out.println(e1.toString());
 	}
 
 	private static void printGrupo(Grupo g, int i) {

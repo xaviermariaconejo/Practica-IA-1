@@ -48,15 +48,13 @@ public class Estat {
 		this.helicopters = new ArrayList<ArrayList<ArrayList<Grupo>>>(e.helicopters.size());
 		int i = 0;
 		for(ArrayList<ArrayList<Grupo>> h : e.helicopters) {
-			this.helicopters.set(i, (ArrayList<ArrayList<Grupo>>) h.clone());
-			int j = 0;
-			for(ArrayList<Grupo> v : e.helicopters.get(i)) {
-				this.helicopters.get(i).set(j, (ArrayList<Grupo>) v.clone());
-				++j;
+			ArrayList<ArrayList<Grupo>> new_h = new ArrayList<ArrayList<Grupo>>();
+			helicopters.add(new_h);
+			for(ArrayList<Grupo> v : h) {
+				new_h.add((ArrayList<Grupo>) v.clone());
 			}
-			++i;
 		}
-		this.temps = 0.0f;
+		this.temps = e.temps;
 	}
 	
 	
@@ -214,8 +212,8 @@ public class Estat {
 		recalcularTemps(Hj, Vj, Gj, -1);
 		helicopters.get(Hi).get(Vi).set(Gi, j);
 		helicopters.get(Hj).get(Vj).set(Gj, i);
-		recalcularTemps(Hi, Vi, Gj, 1);
-		recalcularTemps(Hj, Vj, Gi, 1);
+		recalcularTemps(Hi, Vi, Gi, 1);
+		recalcularTemps(Hj, Vj, Gj, 1);
 		return true;
 	}
 	
@@ -228,8 +226,11 @@ public class Estat {
 		recalcularTemps(Hi, Vi, G, -1);
 		helicopters.get(Hj).get(Vj).add(i);
 		helicopters.get(Hi).get(Vi).remove(G);
-		if(helicopters.get(Hi).get(Vi).size() == 0) helicopters.get(Hi).remove(Vi);
-		recalcularTemps(Hj, Vj, G, 1);
+		if(helicopters.get(Hi).get(Vi).size() == 0) {
+			helicopters.get(Hi).remove(Vi);
+			if(Hi == Hj) --Vj; //Parche
+		}
+		recalcularTemps(Hj, Vj, helicopters.get(Hj).get(Vj).size()-1, 1);
 		return true;
 	}
 	
