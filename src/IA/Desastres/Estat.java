@@ -112,14 +112,15 @@ public class Estat {
 	/**TODO: Encara hem de pensar una solucio inicial greedy.
 	 * @pre "helicopters" inicialitzat.*/
 	private void generaSolucioInicial2() {
-		ArrayList<ArrayList<Grupo>> cercania = new ArrayList<ArrayList<Grupo>>(context.getCentros().size());  
+		ArrayList<ArrayList<Grupo>> cercania = new ArrayList<ArrayList<Grupo>>(context.getCentros().size()); 
+		for(int i = 0; i < context.getCentros().size(); ++i) cercania.add(new ArrayList<Grupo>());
 		Grupos grupos = context.getGrups();
 		Centros centros = context.getCentros();
 		float dist, aux;
 		for(Grupo g : grupos) {
 			int gx = g.getCoordX();
 			int gy = g.getCoordY();
-			int asignado;
+			int asignado = 0;
 			dist = -1;
 			int i = 0;
 			for (Centro c : centros) {
@@ -132,20 +133,20 @@ public class Estat {
 				}
 				++i;
 			}
-			cercania.get(i).add(g);			
+			cercania.get(asignado).add(g);			
 		}
 		int z = 0;
 		int m = 0;
 		for(ArrayList<Grupo> h : cercania) {
 			for (int j = 0; j < h.size(); ++j) {
-				int lastV = helicopters.get(z*m).size()-1;
-				if(lastV >= 0 && helicopters.get(z*m).get(lastV).size() < GRUPS_PER_HELICOPTER-1 && !moureIncompatible(helicopters.get(z*m).get(lastV),h.get(j))) {
-					helicopters.get(z*m).get(lastV).add(h.get(j));
+				int lastV = helicopters.get(z+m*context.getCentros().get(0).getNHelicopteros()).size()-1;
+				if(lastV >= 0 && helicopters.get(z+m*context.getCentros().get(0).getNHelicopteros()).get(lastV).size() < GRUPS_PER_HELICOPTER-1 && !moureIncompatible(helicopters.get(z+m*context.getCentros().get(0).getNHelicopteros()).get(lastV),h.get(j))) {
+					helicopters.get(z+m*context.getCentros().get(0).getNHelicopteros()).get(lastV).add(h.get(j));
 				}
 				else {
 					ArrayList<Grupo> nv = new ArrayList<Grupo>(GRUPS_PER_HELICOPTER);
 					nv.add(h.get(j));
-					helicopters.get(z*m).add(nv);
+					helicopters.get(z+m*context.getCentros().get(0).getNHelicopteros()).add(nv);
 				}
 				++z;
 				if (context.getCentros().get(0).getNHelicopteros() == z) z = 0;
