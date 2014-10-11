@@ -109,7 +109,7 @@ public class Estat {
 		}
 	}
 	
-	/**TODO: Encara hem de pensar una solucio inicial greedy.
+	/**TODO: Genera una solució on s'assigan un grup a un helicopter del centre que esta més a prop. 
 	 * @pre "helicopters" inicialitzat.*/
 	private void generaSolucioInicial2() {
 		ArrayList<ArrayList<Grupo>> cercania = new ArrayList<ArrayList<Grupo>>(context.getCentros().size()); 
@@ -117,6 +117,7 @@ public class Estat {
 		Grupos grupos = context.getGrups();
 		Centros centros = context.getCentros();
 		float dist, aux;
+		/*Per cada grup mirem quin es el centre que te mes a prop*/
 		for(Grupo g : grupos) {
 			int gx = g.getCoordX();
 			int gy = g.getCoordY();
@@ -137,6 +138,7 @@ public class Estat {
 		}
 		int z = 0;
 		int m = 0;
+		/*Amb els grups ya repartits per els centres s'assigan cada grup a un helicopter del centre equitativament*/
 		for(ArrayList<Grupo> h : cercania) {
 			for (int j = 0; j < h.size(); ++j) {
 				int lastV = helicopters.get(z+m*context.getCentros().get(0).getNHelicopteros()).size()-1;

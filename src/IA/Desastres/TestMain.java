@@ -17,7 +17,7 @@ public class TestMain {
 		printDebug(e);
 		System.out.println(e.toString());
 		System.out.println(e.mouGrups(0, 2, 1, 6, 0));
-		System.out.println(e.toString());
+		System.out.println(e.getTempsViatges());
 		e.generaSoucioInicial(TipusInicial.RANDOM);
 		printDebug(e);
 		System.out.println(e.toString());
