@@ -6,8 +6,8 @@ public class FuncioHeuristica1 implements HeuristicFunction {
 
 	@Override
 	public double getHeuristicValue(Object state) {
-		// TODO Auto-generated method stub
-		return 0;
+		Estat e = (Estat) state;
+		return e.getTempsViatges();
 	}
 
 }

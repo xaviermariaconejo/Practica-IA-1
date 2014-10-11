@@ -222,6 +222,19 @@ public class Estat {
 		helicopters.get(Hi).get(Vi).remove(G);
 		recalcularTemps(Hj,  helicopters.get(Hj).size() - 1, 0, 1);
 	}
+
+	/*  =======================================================
+	  
+	                        Heurístics
+	  
+	    =======================================================
+	*/
+	
+	
+	public double getTempsViatges() {
+		return (double) temps;
+	}
+	
 	
 	
 	/*  =======================================================
@@ -344,5 +357,5 @@ public class Estat {
 		return ret;
 		
 	}
-	
+
 }
