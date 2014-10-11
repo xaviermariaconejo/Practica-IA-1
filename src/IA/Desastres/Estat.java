@@ -134,7 +134,25 @@ public class Estat {
 			}
 			cercania.get(i).add(g);			
 		}
-		
+		int z = 0;
+		int m = 0;
+		for(ArrayList<Grupo> h : cercania) {
+			for (int j = 0; j < h.size(); ++j) {
+				int lastV = helicopters.get(z*m).size()-1;
+				if(lastV >= 0 && helicopters.get(z*m).get(lastV).size() < GRUPS_PER_HELICOPTER-1 && !moureIncompatible(helicopters.get(z*m).get(lastV),h.get(j))) {
+					helicopters.get(z*m).get(lastV).add(h.get(j));
+				}
+				else {
+					ArrayList<Grupo> nv = new ArrayList<Grupo>(GRUPS_PER_HELICOPTER);
+					nv.add(h.get(j));
+					helicopters.get(z*m).add(nv);
+				}
+				++z;
+				if (context.getCentros().get(0).getNHelicopteros() == z) z = 0;
+			}
+			z = 0;
+			++m;
+		}	
 	}
 	
 	private void calcularTemps() {
