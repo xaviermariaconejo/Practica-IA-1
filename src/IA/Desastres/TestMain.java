@@ -11,7 +11,7 @@ public class TestMain {
 		int i = 0; for(Grupo g : grupos) printGrupo(g, i++);
 		System.out.println("");
 		Centros c = new Centros(5,2,1234);
-		ContextEstat cntx = new ContextEstat(grupos,c);
+		ContextEstat cntx = new ContextEstat(grupos,c, false);
 		Estat e = new Estat(cntx, 1234);
 		e.generaSoucioInicial(TipusInicial.RANDOM);
 		printDebug(e);

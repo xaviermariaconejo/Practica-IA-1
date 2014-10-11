@@ -137,6 +137,8 @@ public class Estat {
 		
 	}
 	
+	/**Calcula el temps total d'una solució
+	 * @pre "helicopters" inicialitzat.*/
 	private void calcularTemps() {
 		int nH = context.getCentros().get(0).getNHelicopteros();
 		for(int h = 0; h < helicopters.size(); ++h) {
@@ -230,11 +232,7 @@ public class Estat {
 	    =======================================================
 	*/
 	
-	
-	public double getTempsViatges() {
-		return (double) temps;
-	}
-	
+		
 	
 	
 	/*  =======================================================
@@ -295,9 +293,13 @@ public class Estat {
 	}
 	
 	/**Retorna el grup G-èssim de l'helicòpter H.
-	 * @pre H inRange(helicopters); G inRange(helicopters[H])*/
-	public ArrayList<Grupo> getViatge(int H, int G) {
-		return helicopters.get(H).get(G);	
+	 * @pre H inRange(helicopters); V inRange(helicopters[H])*/
+	public ArrayList<Grupo> getViatge(int H, int V) {
+		return helicopters.get(H).get(V);	
+	}
+	
+	public double getTempsViatges() {
+		return (double) temps;
 	}
 
 	/**Shuffle senzill que aleatoritza una llista d'enters fent swaps entre els elements. Implementat
@@ -328,6 +330,10 @@ public class Estat {
 	 * @deprecated*/
 	public ArrayList<ArrayList<ArrayList<Grupo>>> getHelicopters() {
 		return helicopters;
+	}
+	
+	public boolean esSegonHeuristic() {
+		return context.getEsSegonHeuristic();
 	}
 	
 
