@@ -112,6 +112,28 @@ public class Estat {
 	/**TODO: Encara hem de pensar una solucio inicial greedy.
 	 * @pre "helicopters" inicialitzat.*/
 	private void generaSolucioInicial2() {
+		ArrayList<ArrayList<Grupo>> cercania = new ArrayList<ArrayList<Grupo>>(context.getCentros().size());  
+		Grupos grupos = context.getGrups();
+		Centros centros = context.getCentros();
+		float dist, aux;
+		for(Grupo g : grupos) {
+			int gx = g.getCoordX();
+			int gy = g.getCoordY();
+			int asignado;
+			dist = -1;
+			int i = 0;
+			for (Centro c : centros) {
+				int cx = c.getCoordX() - gx;
+				int cy = c.getCoordY() - gy;
+				aux = (float)Math.sqrt((cx*cx) + (cy*cy));
+				if (dist == -1 || dist > aux) {
+					dist = aux;
+					asignado = i;
+				}
+				++i;
+			}
+			cercania.get(i).add(g);			
+		}
 		
 	}
 	
