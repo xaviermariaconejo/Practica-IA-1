@@ -204,7 +204,8 @@ public class Estat {
 		if (moureIncompatible(helicopters.get(Hj).get(Vj), i)) return false;
 		recalcularTemps(Hi, Vi, G, -1);
 		helicopters.get(Hj).get(Vj).add(i);
-		helicopters.get(Hi).get(Vj).remove(G);
+		helicopters.get(Hi).get(Vi).remove(G);
+		if(helicopters.get(Hi).get(Vi).size() == 0) helicopters.get(Hi).remove(Vi);
 		recalcularTemps(Hj, Vj, G, 1);
 		return true;
 	}
@@ -308,6 +309,12 @@ public class Estat {
 			if(g == gs.get(i)) return i;
 		}
 		return -1;
+	}
+	
+	/**Per fer debug. Esborrar això per la versió final
+	 * @deprecated*/
+	public ArrayList<ArrayList<ArrayList<Grupo>>> getHelicopters() {
+		return helicopters;
 	}
 	
 
