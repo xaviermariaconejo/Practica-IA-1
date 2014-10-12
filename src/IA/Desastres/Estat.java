@@ -264,7 +264,7 @@ public class Estat {
 			helicopters.get(Hi).remove(Vi);
 			if(Hi == Hj && Vj > Vi) --Vj; //Parche del parche
 		}
-		recalcularTemps(Hj, Vj, helicopters.get(Hj).get(Vj).size()-1, 1);
+		recalcularTempsMouC(Hj, Vj, helicopters.get(Hj).get(Vj).size()-1);
 		return true;
 	}
 	
@@ -354,10 +354,47 @@ public class Estat {
 			a2 = c.getCoordX() - a2;
 			b2 = c.getCoordY() - b2;
 		}
-		temps = (float) (temps - ((INV_VEL_HEL)*Math.sqrt((a1*a1) + (b1*b1))
+		temps = (float) (temps - (INV_VEL_HEL)*Math.sqrt((a1*a1) + (b1*b1))
 				+ (INV_VEL_HEL)*Math.sqrt((a2*a2) + (b2*b2)) 
-				+ (INV_VEL_HEL)*Math.sqrt((c1*c1) + (c2*c2))));
+				+ (INV_VEL_HEL)*Math.sqrt((c1*c1) + (c2*c2)));
 		
+	}
+	
+	private void recalcularTempsMouC(int H, int V, int G) {
+		Grupo g = helicopters.get(H).get(V).get(G);
+		int nH = context.getCentros().get(0).getNHelicopteros();
+		Centro c = context.getCentros().get(H/nH);
+		int a1, a2, b1, b2, c1, c2;
+		a1 = a2 = g.getCoordX();
+		b1 = b2 = g.getCoordY();
+		c1 = c.getCoordX();
+		c2 = c.getCoordY();
+		if (G > 0) {
+			Grupo aux1 = helicopters.get(H).get(V).get(G - 1);
+			c1 = c1 - aux1.getCoordX();
+			c2 = c2 - aux1.getCoordY();
+			a1 = aux1.getCoordX() - a1;
+			b1 = aux1.getCoordY() - b1;
+			
+		}
+		else {
+			c1 = c1 - c.getCoordX();
+			c2 = c2 - c.getCoordY();
+			a1 = c.getCoordX() - a1;
+			b1 = c.getCoordY() - b1;
+		}
+		if (G < helicopters.get(H).get(V).size() - 1) {
+			Grupo aux2 = helicopters.get(H).get(V).get(G + 1);
+			a2 = aux2.getCoordX() - a2;
+			b2 = aux2.getCoordY() - b2;
+		}
+		else {
+			a2 = c.getCoordX() - a2;
+			b2 = c.getCoordY() - b2;
+		}
+		temps = (float) (temps + (INV_VEL_HEL)*Math.sqrt((a1*a1) + (b1*b1))
+				+ (INV_VEL_HEL)*Math.sqrt((a2*a2) + (b2*b2)) 
+				- (INV_VEL_HEL)*Math.sqrt((c1*c1) + (c2*c2)));
 	}
 	
 	private void recalcularTemps(int H, int V, int G, int X) {

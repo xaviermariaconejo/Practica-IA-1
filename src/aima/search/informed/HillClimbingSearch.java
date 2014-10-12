@@ -31,7 +31,6 @@ public class HillClimbingSearch extends NodeExpander implements Search {
 			}
 			current = neighbor;
 			
-			
 			System.out.println(current.getAction() + " " + getValue(current, p));//TODO: delete this
 			System.out.println(current.getState());//TODO: delete this
 		}
