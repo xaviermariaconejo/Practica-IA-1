@@ -29,8 +29,8 @@ public class Main {
 			Problem problem = new Problem(e_ini, new GeneradorEstats(), new EstatFinal(), new FuncioHeuristica1());
 			Search search = new HillClimbingSearch();
 			SearchAgent agent = new SearchAgent(problem, search);
-			//printActions(agent.getActions());
-			//printInstrumentation(agent.getInstrumentation());
+			printActions(agent.getActions());
+			printInstrumentation(agent.getInstrumentation());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -186,6 +186,38 @@ public class Estat {
 			}
 		}
 	}
+	
+	public float getCalcularTemps() {
+		float temps = 0.0f;
+		int nH = context.getCentros().get(0).getNHelicopteros();
+		for(int h = 0; h < helicopters.size(); ++h) {
+			for(ArrayList<Grupo> v :  helicopters.get(h)) {
+				for(int i = 0; i < v.size() - 1; ++i) {
+					Grupo g = v.get(i);
+					temps = temps + g.getPrioridad()*g.getNPersonas();
+					Grupo aux = v.get(i + 1);
+					int x = g.getCoordX();
+					int y = g.getCoordY();
+					int a = aux.getCoordX() - x;
+					int b = aux.getCoordY() - y;
+					temps = (float) (temps + (INV_VEL_HEL)*Math.sqrt((a*a) + (b*b)));
+				}
+				Centro c = context.getCentros().get(h/nH);
+				int x = c.getCoordX();
+				int y = c.getCoordY();
+				int a1 = v.get(0).getCoordX() - x;
+				int b1 = v.get(0).getCoordY() - y;
+				int a2 = v.get(v.size() - 1).getCoordX() - x;
+				int b2 = v.get(v.size() - 1).getCoordY() - y;
+				temps = (float) (temps + (INV_VEL_HEL)*Math.sqrt((a1*a1) + (b1*b1))
+				+ (INV_VEL_HEL)*Math.sqrt((a2*a2) + (b2*b2)) + v.get(v.size() - 1).getPrioridad()*v.get(v.size() - 1).getNPersonas());
+			}
+		}
+		return temps;
+	}
+	//ALERTA BORRAR SSS: /////////////////////////////////////////////////////
+	////////////////
+	//////////////
 
 	
 	/*  =======================================================
@@ -208,8 +240,8 @@ public class Estat {
 	public boolean intercambiaGrups (int Hi, int Vi, int Gi, int Hj, int Vj, int Gj) {
 		Grupo i = helicopters.get(Hi).get(Vi).get(Gi);
 		Grupo j = helicopters.get(Hj).get(Vj).get(Gj);
-		if(swapIncompatible(helicopters.get(Hj).get(Vj),i,j)) return false;
-		if(swapIncompatible(helicopters.get(Hi).get(Vi),j,i)) return false;
+		if(swapIncompatible(helicopters.get(Hj).get(Vj),j,i)) return false;
+		if(swapIncompatible(helicopters.get(Hi).get(Vi),i,j)) return false;
 		recalcularTemps(Hi, Vi, Gi, -1);
 		recalcularTemps(Hj, Vj, Gj, -1);
 		helicopters.get(Hi).get(Vi).set(Gi, j);
@@ -313,7 +345,8 @@ public class Estat {
 			a2 = c.getCoordX() - x;
 			b2 = c.getCoordY() - y;
 		}
-		temps = (float) (temps + X*((INV_VEL_HEL)*Math.sqrt((a1*a1) + (b1*b1)) + (INV_VEL_HEL)*Math.sqrt((a2*a2) + (b2*b2))));	
+		temps = (float) (temps + X*((INV_VEL_HEL)*Math.sqrt((a1*a1) + (b1*b1))
+				+ (INV_VEL_HEL)*Math.sqrt((a2*a2) + (b2*b2))));
 	}
 	
 	/**Retorna el grup G-èssim de l'helicòpter H.

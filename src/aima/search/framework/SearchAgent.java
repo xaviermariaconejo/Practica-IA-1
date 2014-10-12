@@ -15,10 +15,9 @@ public class SearchAgent extends Agent {
 	private Metrics searchMetrics;
 
 	public SearchAgent(Problem p, Search search) throws Exception {
-		actionList = search.search(p);
+		actionList = search.search(p);//////////
 		actionIterator = actionList.iterator();
 		searchMetrics = search.getMetrics();
-
 	}
 
 	public String execute(Percept p) {

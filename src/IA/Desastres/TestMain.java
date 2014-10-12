@@ -17,6 +17,27 @@ public class TestMain {
 		Estat e1 = new Estat(e);
 		System.out.println(e.toString());
 		System.out.println(e1.toString());
+		System.out.println("TEMPS");
+		System.out.println("START");
+		System.out.println(e.toString());
+		System.out.println(e.getTempsViatges());
+		System.out.println(e.getCalcularTemps());
+		System.out.println(e.getTempsViatges());
+		//H3: {1, 12}{15, 20, 22}{36}
+		//e.mouGrups(Gi, Hi, Vi, Hj, Vj)
+		e.mouGrups(1, 3, 0, 3, 2);
+		System.out.println("MOU");
+		System.out.println(e.toString());
+		System.out.println(e.getTempsViatges());
+		System.out.println(e.getCalcularTemps());
+		System.out.println(e.getTempsViatges());
+		//e.intercambiaGrups(Hi, Vi, Gi, Hj, Vj, Gj)
+		e.intercambiaGrups(3, 0, 0, 3, 2, 0);
+		System.out.println("Intercambia");
+		System.out.println(e.toString());
+		System.out.println(e.getTempsViatges());
+		System.out.println(e.getCalcularTemps());
+		System.out.println(e.getTempsViatges());
 	}
 
 	private static void printGrupo(Grupo g, int i) {
