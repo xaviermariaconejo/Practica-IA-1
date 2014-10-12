@@ -12,9 +12,9 @@ public class Estat {
 	private static final int CAPACITAT_HELICOPTERS=15;
 
 	/**El màxim nombre de grups que pot portar un helicopter en un viatge*/
-	private static final int GRUPS_PER_HELICOPTER=15;
+	private static final int GRUPS_PER_HELICOPTER=3;
 
-	private static final double INV_VEL_HEL = 0.0024;
+	private static final double INV_VEL_HEL = 1/1.66;
 	
 	/**Tipus de solució inicial*/
 	static enum TipusInicial {RANDOM, GREEDY};
