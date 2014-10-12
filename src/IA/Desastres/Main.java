@@ -23,9 +23,6 @@ public class Main {
 			ContextEstat cntx = new ContextEstat(grupos,c, false);
 			Estat e_ini = new Estat(cntx, seed);
 			e_ini.generaSoucioInicial(TipusInicial.GREEDY);
-			System.out.println("START");
-			System.out.println(e_ini.toString());
-			System.out.println("TEMPS: "+e_ini.getTempsViatges());
 			Problem problem = new Problem(e_ini, new GeneradorEstats(), new EstatFinal(), new FuncioHeuristica1());
 			Search search = new HillClimbingSearch();
 			SearchAgent agent = new SearchAgent(problem, search);
