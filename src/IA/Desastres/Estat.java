@@ -187,38 +187,6 @@ public class Estat {
 		}
 	}
 	
-	public float getCalcularTemps() {
-		float temps = 0.0f;
-		int nH = context.getCentros().get(0).getNHelicopteros();
-		for(int h = 0; h < helicopters.size(); ++h) {
-			for(ArrayList<Grupo> v :  helicopters.get(h)) {
-				for(int i = 0; i < v.size() - 1; ++i) {
-					Grupo g = v.get(i);
-					temps = temps + g.getPrioridad()*g.getNPersonas();
-					Grupo aux = v.get(i + 1);
-					int x = g.getCoordX();
-					int y = g.getCoordY();
-					int a = aux.getCoordX() - x;
-					int b = aux.getCoordY() - y;
-					temps = (float) (temps + (INV_VEL_HEL)*Math.sqrt((a*a) + (b*b)));
-				}
-				Centro c = context.getCentros().get(h/nH);
-				int x = c.getCoordX();
-				int y = c.getCoordY();
-				int a1 = v.get(0).getCoordX() - x;
-				int b1 = v.get(0).getCoordY() - y;
-				int a2 = v.get(v.size() - 1).getCoordX() - x;
-				int b2 = v.get(v.size() - 1).getCoordY() - y;
-				temps = (float) (temps + (INV_VEL_HEL)*Math.sqrt((a1*a1) + (b1*b1))
-				+ (INV_VEL_HEL)*Math.sqrt((a2*a2) + (b2*b2)) + v.get(v.size() - 1).getPrioridad()*v.get(v.size() - 1).getNPersonas());
-			}
-		}
-		return temps;
-	}
-	//ALERTA BORRAR SSS: /////////////////////////////////////////////////////
-	////////////////
-	//////////////
-
 	
 	/*  =======================================================
 	  
@@ -231,8 +199,12 @@ public class Estat {
 	 * @pre Hi, Hj inRange(helicopters); Vi inRange(helicopters[Hi]); Vj inRange(helicopters[Hj]*/
 	public void intercambiaViatges (int H1, int Vi, int H2, int Vj) {
 		ArrayList<Grupo> i = helicopters.get(H1).get(Vi);
+		recalcularTempsViatges(H1, Vi, -1);
+		recalcularTempsViatges(H2, Vj, -1);
 		helicopters.get(H1).set(Vi, helicopters.get(H2).get(Vj));
 		helicopters.get(H2).set(Vj, i);
+		recalcularTempsViatges(H1, Vi, 1);
+		recalcularTempsViatges(H2, Vj, 1);
 	}
 	
 	/**Intercanvia el grup G del viatge Vi de l'helicòpter Hi pel grup Gj del viatge Vj de l'helicopter Hj
@@ -318,6 +290,22 @@ public class Estat {
 			if(capacidad > CAPACITAT_HELICOPTERS) return true;
 		}
 		return false;
+	}
+	
+	private void recalcularTempsViatges(int H, int V, int X) {
+		int a1, a2, b1, b2;
+		int nH = context.getCentros().get(0).getNHelicopteros();
+		Centro c = context.getCentros().get(H/nH);
+		a1 = a2 = c.getCoordX();
+		b1 = b2 = c.getCoordY();
+		Grupo g1 = helicopters.get(H).get(V).get(0);
+		Grupo g2 = helicopters.get(H).get(V).get((helicopters.get(H).get(V).size() - 1));
+		a1 = a1 - g1.getCoordX();
+		b1 = b1 - g1.getCoordY();
+		a2 = a2 - g2.getCoordX();
+		b2 = b2 - g2.getCoordY();
+		temps = (float) (temps + X*((INV_VEL_HEL)*Math.sqrt((a1*a1) + (b1*b1))
+				+ (INV_VEL_HEL)*Math.sqrt((a2*a2) + (b2*b2))));
 	}
 	
 	private void recalcularTempsMou(int H, int V, int G) {

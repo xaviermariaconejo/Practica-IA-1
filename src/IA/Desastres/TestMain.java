@@ -21,7 +21,6 @@ public class TestMain {
 		System.out.println("START");
 		System.out.println(e.toString());
 		System.out.println(e.getTempsViatges());
-		System.out.println(e.getCalcularTemps());
 		System.out.println(e.getTempsViatges());
 		//H3: {1, 12}{15, 20, 22}{36}
 		//e.mouGrups(Gi, Hi, Vi, Hj, Vj)
@@ -29,14 +28,12 @@ public class TestMain {
 		System.out.println("MOU");
 		System.out.println(e.toString());
 		System.out.println(e.getTempsViatges());
-		System.out.println(e.getCalcularTemps());
 		System.out.println(e.getTempsViatges());
 		//e.intercambiaGrups(Hi, Vi, Gi, Hj, Vj, Gj)
 		e.intercambiaGrups(3, 0, 0, 3, 2, 0);
 		System.out.println("Intercambia");
 		System.out.println(e.toString());
 		System.out.println(e.getTempsViatges());
-		System.out.println(e.getCalcularTemps());
 		System.out.println(e.getTempsViatges());
 	}
 
