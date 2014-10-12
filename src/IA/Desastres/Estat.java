@@ -342,9 +342,9 @@ public class Estat {
 			a2 = c.getCoordX() - a2;
 			b2 = c.getCoordY() - b2;
 		}
-		temps = (float) (temps - (INV_VEL_HEL)*Math.sqrt((a1*a1) + (b1*b1))
+		temps = (float) (temps - ((INV_VEL_HEL)*Math.sqrt((a1*a1) + (b1*b1))
 				+ (INV_VEL_HEL)*Math.sqrt((a2*a2) + (b2*b2)) 
-				+ (INV_VEL_HEL)*Math.sqrt((c1*c1) + (c2*c2)));
+				+ (INV_VEL_HEL)*Math.sqrt((c1*c1) + (c2*c2))));
 		
 	}
 	
