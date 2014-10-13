@@ -161,9 +161,11 @@ public class Estat {
 	/**Calcula el temps total d'una solució
 	 * @pre "helicopters" inicialitzat.*/
 	private void calcularTemps() {
+		//nH conté el nombre de helicopters de cada centre
 		int nH = context.getCentros().get(0).getNHelicopteros();
 		for(int h = 0; h < helicopters.size(); ++h) {
 			for(ArrayList<Grupo> v :  helicopters.get(h)) {
+				//Sumem el temps del viatge que hi ha entre dos grups i el temps que es triga en recollir-los, excepte el últim grup
 				for(int i = 0; i < v.size() - 1; ++i) {
 					Grupo g = v.get(i);
 					temps = temps + g.getPrioridad()*g.getNPersonas();
@@ -174,6 +176,8 @@ public class Estat {
 					int b = aux.getCoordY() - y;
 					temps = (float) (temps + (INV_VEL_HEL)*Math.sqrt((a*a) + (b*b)));
 				}
+				//Sumem al temps el viatge que hi ha entre el centre al primer grup, i de l'últim grup al centre, a més
+				//del temps de recollida de l'últim grup
 				Centro c = context.getCentros().get(h/nH);
 				int x = c.getCoordX();
 				int y = c.getCoordY();
@@ -199,12 +203,12 @@ public class Estat {
 	 * @pre Hi, Hj inRange(helicopters); Vi inRange(helicopters[Hi]); Vj inRange(helicopters[Hj]*/
 	public void intercambiaViatges (int H1, int Vi, int H2, int Vj) {
 		ArrayList<Grupo> i = helicopters.get(H1).get(Vi);
-		recalcularTempsViatges(H1, Vi, -1);
-		recalcularTempsViatges(H2, Vj, -1);
+		recalcularIntercambiaViatges(H1, Vi, -1);
+		recalcularIntercambiaViatges(H2, Vj, -1);
 		helicopters.get(H1).set(Vi, helicopters.get(H2).get(Vj));
 		helicopters.get(H2).set(Vj, i);
-		recalcularTempsViatges(H1, Vi, 1);
-		recalcularTempsViatges(H2, Vj, 1);
+		recalcularIntercambiaViatges(H1, Vi, 1);
+		recalcularIntercambiaViatges(H2, Vj, 1);
 	}
 	
 	/**Intercanvia el grup G del viatge Vi de l'helicòpter Hi pel grup Gj del viatge Vj de l'helicopter Hj
@@ -214,12 +218,12 @@ public class Estat {
 		Grupo j = helicopters.get(Hj).get(Vj).get(Gj);
 		if(swapIncompatible(helicopters.get(Hj).get(Vj),j,i)) return false;
 		if(swapIncompatible(helicopters.get(Hi).get(Vi),i,j)) return false;
-		recalcularTemps(Hi, Vi, Gi, -1);
-		recalcularTemps(Hj, Vj, Gj, -1);
+		recalcularIntercambiaGrups(Hi, Vi, Gi, -1);
+		recalcularIntercambiaGrups(Hj, Vj, Gj, -1);
 		helicopters.get(Hi).get(Vi).set(Gi, j);
 		helicopters.get(Hj).get(Vj).set(Gj, i);
-		recalcularTemps(Hi, Vi, Gi, 1);
-		recalcularTemps(Hj, Vj, Gj, 1);
+		recalcularIntercambiaGrups(Hi, Vi, Gi, 1);
+		recalcularIntercambiaGrups(Hj, Vj, Gj, 1);
 		return true;
 	}
 	
@@ -229,14 +233,14 @@ public class Estat {
 		Grupo i = helicopters.get(Hi).get(Vi).get(G);
 		if (helicopters.get(Hj).get(Vj).size() == GRUPS_PER_HELICOPTER) return false;
 		if (moureIncompatible(helicopters.get(Hj).get(Vj), i)) return false;
-		recalcularTempsMou(Hi, Vi, G);
+		recalcularTreuGrup(Hi, Vi, G);
 		helicopters.get(Hj).get(Vj).add(i);
 		helicopters.get(Hi).get(Vi).remove(G);
 		if(helicopters.get(Hi).get(Vi).size() == 0) {
 			helicopters.get(Hi).remove(Vi);
 			if(Hi == Hj && Vj > Vi) --Vj; //Parche del parche
 		}
-		recalcularTempsMouC(Hj, Vj, helicopters.get(Hj).get(Vj).size()-1);
+		recalcularPosaGrup(Hj, Vj, helicopters.get(Hj).get(Vj).size()-1);
 		return true;
 	}
 	
@@ -245,12 +249,17 @@ public class Estat {
 	 * @pre Hi,Hj inRange(helicopters); Vi inRange(helicopters[Hi]; G inRange(helicopters[Hi][Vi])*/
 	public void mouGrupNouViatge(int G, int Hi, int Vi, int Hj) {
 		Grupo i = helicopters.get(Hi).get(Vi).get(G);
-		recalcularTempsMou(Hi, Vi, G);
+		recalcularTreuGrup(Hi, Vi, G);
 		ArrayList<Grupo> viatge = new ArrayList<Grupo>(3);
 		viatge.add(i);
 		helicopters.get(Hj).add(viatge);
 		helicopters.get(Hi).get(Vi).remove(G);
-		recalcularTemps(Hj,  helicopters.get(Hj).size() - 1, 0, 1);
+		if(helicopters.get(Hi).get(Vi).size() == 0)
+			helicopters.get(Hi).remove(Vi);
+		//Aqui cridem a "recalcularIntercambiaGrups" ja que el que tenim que fer es
+		//sumar el temps dels viatges del grup "G" al centre del seu nou helicopters
+		//dos vegades, el de anada i el de tornada
+		recalcularIntercambiaGrups(Hj,  helicopters.get(Hj).size() - 1, 0, 1);
 	}
 
 	/*  =======================================================
@@ -292,9 +301,14 @@ public class Estat {
 		return false;
 	}
 	
-	private void recalcularTempsViatges(int H, int V, int X) {
+	/**Segons el valor de "X", restarà o sumarà el temps del viatge que hi ha en el viatge "V" del helicopter "H"
+	 * entre el seu primer grup al centre, i el seu últim grup al centre, al que pertany el helicopter
+	 * @pre H inRange(helicopters); V inRange(helicopters[H]); X == 1, si vol sumar; X == -1, si vol restar.*/
+	private void recalcularIntercambiaViatges(int H, int V, int X) {
 		int a1, a2, b1, b2;
+		//nH es el nombre d'helicopters que hi ha en cada centre
 		int nH = context.getCentros().get(0).getNHelicopteros();
+		//El centre c és el centre al que pertany el helicopter H
 		Centro c = context.getCentros().get(H/nH);
 		a1 = a2 = c.getCoordX();
 		b1 = b2 = c.getCoordY();
@@ -308,20 +322,26 @@ public class Estat {
 				+ (INV_VEL_HEL)*Math.sqrt((a2*a2) + (b2*b2))));
 	}
 	
-	private void recalcularTempsMou(int H, int V, int G) {
+	/**Restarà el temps dels viatges que hi ha en el grup "G" amb amb la seva següent localització
+	 * (ja sigui un altre grup o un centre) i la seva anterior localització que es trobe en 
+	 * el viatge "V" del helicopter "H". I sumarà el temps que hi ha en el nou viatge de la
+	 * localització anterior al grup "G", amb la seva localització posterior, per tal de tornar a tancar el viatge "V"
+	 * @pre H inRange(helicopters); V inRange(helicopters[H]); G inRange(helicopters[H][V]).*/
+	private void recalcularTreuGrup(int H, int V, int G) {
 		Grupo g = helicopters.get(H).get(V).get(G);
 		int a1, a2, b1, b2, c1, c2;
 		a1 = a2 = g.getCoordX();
 		b1 = b2 = g.getCoordY();
+		//nH es el nombre d'helicopters que hi ha en cada centre
 		int nH = context.getCentros().get(0).getNHelicopteros();
+		//El centre c és el centre al que pertany el helicopter H
 		Centro c = context.getCentros().get(H/nH);
 		if (G > 0) {
-			Grupo aux1 = helicopters.get(H).get(V).get(G - 1);
-			c1 = aux1.getCoordX();
-			c2 = aux1.getCoordY();
+			Grupo aux = helicopters.get(H).get(V).get(G - 1);
+			c1 = aux.getCoordX();
+			c2 = aux.getCoordY();
 			a1 = c1 - a1;
-			b1 = c2 - b1;
-			
+			b1 = c2 - b1;			
 		}
 		else {
 			c1 = c.getCoordX();
@@ -330,11 +350,11 @@ public class Estat {
 			b1 = c2 - b1;
 		}
 		if (G < helicopters.get(H).get(V).size() - 1) {
-			Grupo aux2 = helicopters.get(H).get(V).get(G + 1);
-			c1 = c1 - aux2.getCoordX();
-			c2 = c2 - aux2.getCoordY();
-			a2 = aux2.getCoordX() - a2;
-			b2 = aux2.getCoordY() - b2;
+			Grupo aux = helicopters.get(H).get(V).get(G + 1);
+			c1 = c1 - aux.getCoordX();
+			c2 = c2 - aux.getCoordY();
+			a2 = aux.getCoordX() - a2;
+			b2 = aux.getCoordY() - b2;
 		}
 		else {
 			c1 = c1 - c.getCoordX();
@@ -342,15 +362,23 @@ public class Estat {
 			a2 = c.getCoordX() - a2;
 			b2 = c.getCoordY() - b2;
 		}
-		temps = (float) (temps - ((INV_VEL_HEL)*Math.sqrt((a1*a1) + (b1*b1))
-				+ (INV_VEL_HEL)*Math.sqrt((a2*a2) + (b2*b2)) 
-				+ (INV_VEL_HEL)*Math.sqrt((c1*c1) + (c2*c2))));
+		temps = (float) (temps - (INV_VEL_HEL)*Math.sqrt((a1*a1) + (b1*b1))
+				- (INV_VEL_HEL)*Math.sqrt((a2*a2) + (b2*b2)) 
+				+ (INV_VEL_HEL)*Math.sqrt((c1*c1) + (c2*c2)));
 		
 	}
 	
-	private void recalcularTempsMouC(int H, int V, int G) {
+	/**Sumarà el temps dels viatges que hi ha en el grup "G" amb amb la seva següent localització
+	 * (ja sigui un altre grup o un centre) i la seva anterior localització que es troba en 
+	 * el viatge "V" del helicopter "H". I restarà el temps que hi ha en el nou viatge de la
+	 * localització anterior al grup "G", amb la seva localització posterior, per tal de esborrar
+	 * aquest viatge que hi habia abans de situar en la nova posició el grup "G" en el viatge "V"
+	 * @pre H inRange(helicopters); V inRange(helicopters[H]); G inRange(helicopters[H][V]).*/
+	private void recalcularPosaGrup(int H, int V, int G) {
 		Grupo g = helicopters.get(H).get(V).get(G);
+		//nH es el nombre d'helicopters que hi ha en cada centre
 		int nH = context.getCentros().get(0).getNHelicopteros();
+		//El centre c és el centre al que pertany el helicopter H
 		Centro c = context.getCentros().get(H/nH);
 		int a1, a2, b1, b2, c1, c2;
 		a1 = a2 = g.getCoordX();
@@ -358,11 +386,11 @@ public class Estat {
 		c1 = c.getCoordX();
 		c2 = c.getCoordY();
 		if (G > 0) {
-			Grupo aux1 = helicopters.get(H).get(V).get(G - 1);
-			c1 = c1 - aux1.getCoordX();
-			c2 = c2 - aux1.getCoordY();
-			a1 = aux1.getCoordX() - a1;
-			b1 = aux1.getCoordY() - b1;
+			Grupo aux = helicopters.get(H).get(V).get(G - 1);
+			c1 = c1 - aux.getCoordX();
+			c2 = c2 - aux.getCoordY();
+			a1 = aux.getCoordX() - a1;
+			b1 = aux.getCoordY() - b1;
 			
 		}
 		else {
@@ -372,9 +400,9 @@ public class Estat {
 			b1 = c.getCoordY() - b1;
 		}
 		if (G < helicopters.get(H).get(V).size() - 1) {
-			Grupo aux2 = helicopters.get(H).get(V).get(G + 1);
-			a2 = aux2.getCoordX() - a2;
-			b2 = aux2.getCoordY() - b2;
+			Grupo aux = helicopters.get(H).get(V).get(G + 1);
+			a2 = aux.getCoordX() - a2;
+			b2 = aux.getCoordY() - b2;
 		}
 		else {
 			a2 = c.getCoordX() - a2;
@@ -385,26 +413,32 @@ public class Estat {
 				- (INV_VEL_HEL)*Math.sqrt((c1*c1) + (c2*c2)));
 	}
 	
-	private void recalcularTemps(int H, int V, int G, int X) {
+	/**Segons el valor de "X", restarà o sumarà el temps del viatge que hi ha en el viatge "V" del helicopter "H"
+	 * entre en el grup "G" amb amb la seva següent localització (ja sigui un altre grup o un centre) i la seva anterior
+	 * @pre H inRange(helicopters); V inRange(helicopters[H]); G inRange(helicopters[H][V]);
+	 * X == 1, si vol sumar; X == -1, si vol restar.*/
+	private void recalcularIntercambiaGrups(int H, int V, int G, int X) {
 		Grupo g = helicopters.get(H).get(V).get(G);
-		int a1, a2, b1, b2, c1, c2;
+		int a1, a2, b1, b2;
 		a1 = a2 = g.getCoordX();
 		b1 = b2 = g.getCoordY();
+		//nH es el nombre d'helicopters que hi ha en cada centre
 		int nH = context.getCentros().get(0).getNHelicopteros();
+		//El centre c és el centre al que pertany el helicopter H
 		Centro c = context.getCentros().get(H/nH);
 		if (G > 0) {
-			Grupo aux1 = helicopters.get(H).get(V).get(G - 1);
-			a1 = aux1.getCoordX() - a1;
-			b1 = aux1.getCoordY() - b1;
+			Grupo aux = helicopters.get(H).get(V).get(G - 1);
+			a1 = aux.getCoordX() - a1;
+			b1 = aux.getCoordY() - b1;
 		}
 		else {
 			a1 = c.getCoordX() - a1;
 			b1 = c.getCoordY() - b1;
 		}
 		if (G < helicopters.get(H).get(V).size() - 1) {
-			Grupo aux2 = helicopters.get(H).get(V).get(G + 1);
-			a2 = aux2.getCoordX() - a2;
-			b2 = aux2.getCoordY() - b2;
+			Grupo aux = helicopters.get(H).get(V).get(G + 1);
+			a2 = aux.getCoordX() - a2;
+			b2 = aux.getCoordY() - b2;
 		}
 		else {
 			a2 = c.getCoordX() - a2;

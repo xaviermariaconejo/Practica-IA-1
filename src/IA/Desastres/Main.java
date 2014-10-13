@@ -18,11 +18,11 @@ public class Main {
 	public static void main (String[] args) {
 		
 		try {
-			Grupos grupos = new Grupos(100,(int) seed);
+			Grupos grupos = new Grupos(1,(int) seed);
 			Centros c = new Centros(5,1,(int) seed);
 			ContextEstat cntx = new ContextEstat(grupos,c, false);
 			Estat e_ini = new Estat(cntx, seed);
-			e_ini.generaSoucioInicial(TipusInicial.GREEDY);
+			e_ini.generaSoucioInicial(TipusInicial.RANDOM);
 			Problem problem = new Problem(e_ini, new GeneradorEstats(), new EstatFinal(), new FuncioHeuristica1());
 			Search search = new HillClimbingSearch();
 			SearchAgent agent = new SearchAgent(problem, search);

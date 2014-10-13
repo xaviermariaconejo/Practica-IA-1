@@ -24,18 +24,25 @@ public class GeneradorEstats implements SuccessorFunction {
 					e1.intercambiaGrups(h, v, 0, h, v, 1);
 					e2.intercambiaGrups(h, v, 0, h, v, 2);
 					e3.intercambiaGrups(h, v, 1, h, v, 2);
-					String s1 = "Intercambi Grups (Hi: "+h+", Vi: "+v+", Gi: 0, Hj: "+h+", Vj: "+v+", Gj: 1)";
-					String s2 = "Intercambi Grups (Hi: "+h+", Vi: "+v+", Gi: 0, Hj: "+h+", Vj: "+v+", Gj: 2)";;
-					String s3 = "Intercambi Grups (Hi: "+h+", Vi: "+v+", Gi: 1, Hj: "+h+", Vj: "+v+", Gj: 2)";;
+					String s1 = "Intercambi Grups (Hi, "+h+", Vi: "+v+", Gi: 0, Hj: "+h+", Vj: "+v+", Gj: 1)";
+					String s2 = "Intercambi Grups (Hi: "+h+", Vi: "+v+", Gi: 0, Hj: "+h+", Vj: "+v+", Gj: 2)";
+					String s3 = "Intercambi Grups (Hi: "+h+", Vi: "+v+", Gi: 1, Hj: "+h+", Vj: "+v+", Gj: 2)";
 					l.add(new Successor(s1, e1));
 					l.add(new Successor(s2, e2)); 
 					l.add(new Successor(s3, e3));
 				}				
 				for(int haux = 0; haux < helicopters.size(); ++haux)
 				{
+
+					for(int g = 0; g < helicopters.get(h).get(v).size(); ++g)
+					{
+						Estat estat1 = new Estat ((Estat)state);
+						estat1.mouGrupNouViatge(g, h, v, haux);
+						l.add(new Successor("Mou Grup Viatge Nou (Hi: "+h+", Vi: "+v+", Gi: "+g+", Hj: "+haux+")", estat1));
+					}
 					for(int vaux = 0; vaux < helicopters.get(haux).size(); ++ vaux)
 					{
-						if ((haux > h && vaux > v) || (haux >= h && vaux >= v && ((Estat)state).esSegonHeuristic()))
+						if (haux > h || (haux == h && v != vaux && ((Estat)state).esSegonHeuristic()))
 						{
 							Estat e = new Estat ((Estat)state);
 							e.intercambiaViatges(h, v, haux, vaux);
@@ -43,28 +50,26 @@ public class GeneradorEstats implements SuccessorFunction {
 						}
 						for(int g = 0; g < helicopters.get(h).get(v).size(); ++g)
 						{
-
-							Estat estat = new Estat ((Estat)state);
-							estat.mouGrupNouViatge(g, h, v, haux);
-							l.add(new Successor("Mou Grup Viatge Nou (Hi: "+h+", Vi: "+v+", Gi: "+g+", Hj: "+haux+")", estat));
 							if ((h == haux && v != vaux) || h != haux)
 							{
-								Estat est = new Estat ((Estat)state);
-								if (est.mouGrups(g, h, v, haux, vaux))
-									l.add(new Successor("Mou Grup (Hi: "+h+", Vi: "+v+", Gi: "+g+", Hj: "+haux+", Vj: "+vaux+")", est));
+								Estat estat2 = new Estat ((Estat)state);
+								if (estat2.mouGrups(g, h, v, haux, vaux))
+									l.add(new Successor("Mou Grup (Hi: "+h+", Vi: "+v+", Gi: "+g+", Hj: "+haux+", Vj: "+vaux+")", estat2));
 							}
 							for(int gaux = 0; gaux < helicopters.get(haux).get(vaux).size(); ++gaux)
 							{
-								Estat aux = new Estat ((Estat)state);
-								if (aux.intercambiaGrups(h, v, g, haux, vaux, gaux))
-									l.add(new Successor("Intercambi Grups (Hi: "+h+", Vi: "+v+", Gi: "+g+", Hj: "+haux+", Vj: "+vaux+", Gj: "+gaux+")", aux));
+								if((h == haux && v != vaux) || haux > h)
+								{
+									Estat estat3 = new Estat ((Estat)state);
+									if (estat3.intercambiaGrups(h, v, g, haux, vaux, gaux))
+										l.add(new Successor("Intercambi Grups (Hi: "+h+", Vi: "+v+", Gi: "+g+", Hj: "+haux+", Vj: "+vaux+", Gj: "+gaux+")", estat3));
+								}
 							}
 						}
 					}
 				}
 			}
-		}
-				
+		}				
 		return l;
 	}
 }
