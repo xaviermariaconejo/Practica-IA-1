@@ -18,14 +18,16 @@ public class Main {
 	public static void main (String[] args) {
 		
 		try {
-			Grupos grupos = new Grupos(1,(int) seed);
+			Grupos grupos = new Grupos(100,(int) seed);
 			Centros c = new Centros(5,1,(int) seed);
 			ContextEstat cntx = new ContextEstat(grupos,c, false);
 			Estat e_ini = new Estat(cntx, seed);
-			e_ini.generaSoucioInicial(TipusInicial.RANDOM);
+			e_ini.generaSoucioInicial(TipusInicial.GREEDY);
 			Problem problem = new Problem(e_ini, new GeneradorEstats(), new EstatFinal(), new FuncioHeuristica1());
 			Search search = new HillClimbingSearch();
+			long time = System.currentTimeMillis();
 			SearchAgent agent = new SearchAgent(problem, search);
+			System.out.println("Elapsed time: "+(System.currentTimeMillis() - time));
 			printActions(agent.getActions());
 			printInstrumentation(agent.getInstrumentation());
 		} catch (Exception e) {
