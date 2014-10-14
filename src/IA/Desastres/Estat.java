@@ -448,14 +448,58 @@ public class Estat {
 		return -1;
 	}
 	
-	/**Per fer debug. Esborrar això per la versió final
-	 * @deprecated*/
+	/**Retorna l'estructura interna de l'estat.*/
 	public ArrayList<ArrayList<ArrayList<Grupo>>> getHelicopters() {
 		return helicopters;
 	}
 	
+	/**Indica si aquest estat pertany al problema plantejat pel segon cas de l'enunciat*/
 	public boolean esSegonHeuristic() {
 		return context.getEsSegonHeuristic();
+	}
+	
+	/**Retorna el temps màxim per rescatar a tots els grups amb ferits
+	 * @pre Aquest estat és copia d'un estat inicialitzat o s'ha inicialitzat amb una solució inicial*/
+	public double tempsMaximFerits() {
+		double tempsMax = 0;
+		int nH = context.getCentros().get(0).getNHelicopteros();
+		//Inv: tempsMax és, pels h vistos, el temps máxim de rescatar tots els grups amb ferits
+		for(int h = 0; h < helicopters.size(); ++h) {
+			double t_max = 0; //pels v vistos, temps de rescatar a tots els grups amb ferits d'h
+			double t_acc = 0; //pels v vistos, temps que triguen a realitzar-se 
+			for(ArrayList<Grupo> v :  helicopters.get(h)) {
+				double t_viatge = 0; //temps d'aquest viatge
+				boolean prio1 = false; //té algun grup de prioritat 1?
+				
+				for(int i = 0; i < v.size() - 1; ++i) {
+					Grupo g = v.get(i);
+					t_viatge = t_viatge + g.getPrioridad()*g.getNPersonas();
+					Grupo aux = v.get(i + 1);
+					int x = g.getCoordX();
+					int y = g.getCoordY();
+					int a = aux.getCoordX() - x;
+					int b = aux.getCoordY() - y;
+					t_viatge = (float) (t_viatge + (INV_VEL_HEL)*Math.sqrt((a*a) + (b*b)));
+					
+					if(g.getPrioridad() == 1) prio1 = true;
+					
+				}
+				Centro c = context.getCentros().get(h/nH);
+				int x = c.getCoordX();
+				int y = c.getCoordY();
+				int a1 = v.get(0).getCoordX() - x;
+				int b1 = v.get(0).getCoordY() - y;
+				int a2 = v.get(v.size() - 1).getCoordX() - x;
+				int b2 = v.get(v.size() - 1).getCoordY() - y;
+				t_viatge = (float) (t_viatge + (INV_VEL_HEL)*Math.sqrt((a1*a1) + (b1*b1))
+				+ (INV_VEL_HEL)*Math.sqrt((a2*a2) + (b2*b2)) + v.get(v.size() - 1).getPrioridad()*v.get(v.size() - 1).getNPersonas());
+				
+				t_acc += t_viatge;
+				if(prio1) t_max = t_acc;
+			}
+			if(t_max > 0) tempsMax = (tempsMax>t_max)?tempsMax:t_max;
+		}
+		return tempsMax;
 	}
 	
 
