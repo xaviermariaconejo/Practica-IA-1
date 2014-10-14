@@ -23,11 +23,14 @@ public class Main {
 			ContextEstat cntx = new ContextEstat(grupos,c, false);
 			Estat e_ini = new Estat(cntx, seed);
 			e_ini.generaSoucioInicial(TipusInicial.GREEDY);
+			System.out.println("El greedy triga un total de: "+e_ini.getTempsViatges()+"min");
 			Problem problem = new Problem(e_ini, new GeneradorEstats(), new EstatFinal(), new FuncioHeuristica1());
 			Search search = new HillClimbingSearch();
 			long time = System.currentTimeMillis();
 			SearchAgent agent = new SearchAgent(problem, search);
 			System.out.println("Elapsed time: "+(System.currentTimeMillis() - time));
+			List<Estat> l = search.getPathStates();
+			if(l.size() > 0) System.out.println("La solució millorada és de: "+l.get(l.size()-1).getTempsViatges()+"min");
 			printActions(agent.getActions());
 			printInstrumentation(agent.getInstrumentation());
 		} catch (Exception e) {
