@@ -25,7 +25,9 @@ public class Main {
 			e_ini.generaSoucioInicial(TipusInicial.GREEDY);
 			Problem problem = new Problem(e_ini, new GeneradorEstats(), new EstatFinal(), new FuncioHeuristica1());
 			Search search = new HillClimbingSearch();
+			long time = System.currentTimeMillis();
 			SearchAgent agent = new SearchAgent(problem, search);
+			System.out.println("Elapsed time: "+(System.currentTimeMillis() - time));
 			printActions(agent.getActions());
 			printInstrumentation(agent.getInstrumentation());
 		} catch (Exception e) {
