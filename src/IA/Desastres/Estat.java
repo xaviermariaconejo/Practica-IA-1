@@ -47,14 +47,17 @@ public class Estat {
 	 * @param e L'estat anterior*/
 	public Estat(Estat e) {
 		this.context = e.context;
-		this.helicopters = new ArrayList<ArrayList<ArrayList<Grupo>>>(e.helicopters.size());
+		this.helicopters = new ArrayList<ArrayList<ArrayList<Grupo>>>(e.helicopters);
 		int i = 0;
 		for(ArrayList<ArrayList<Grupo>> h : e.helicopters) {
-			ArrayList<ArrayList<Grupo>> new_h = new ArrayList<ArrayList<Grupo>>();
-			helicopters.add(new_h);
+			ArrayList<ArrayList<Grupo>> new_h = new ArrayList<ArrayList<Grupo>>(h);
+			helicopters.set(i,new_h);
+			int j = 0;
 			for(ArrayList<Grupo> v : h) {
-				new_h.add((ArrayList<Grupo>) v.clone());
+				new_h.set(j,new ArrayList<Grupo>(v));
+				++j;
 			}
+			i++;
 		}
 		this.temps = e.temps;
 	}
