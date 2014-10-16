@@ -26,13 +26,10 @@ public class GeneradorEstats implements SuccessorFunction {
 					Estat e2 = new Estat ((Estat)state);
 					Estat e3 = new Estat ((Estat)state);
 					e1.intercambiaGrups(h, v, 0, h, v, 1);
-					e2.intercambiaGrups(h, v, 0, h, v, 2);
 					e3.intercambiaGrups(h, v, 1, h, v, 2);
 					String s1 = "Rotacio Grups (Hi, "+h+", Vi: "+v+", Gi: 0, Hj: "+h+", Vj: "+v+", Gj: 1)";
-					String s2 = "Rotacio Grups (Hi: "+h+", Vi: "+v+", Gi: 0, Hj: "+h+", Vj: "+v+", Gj: 2)";
 					String s3 = "Rotacio Grups (Hi: "+h+", Vi: "+v+", Gi: 1, Hj: "+h+", Vj: "+v+", Gj: 2)";
 					l.add(new Successor(s1, e1));
-					l.add(new Successor(s2, e2)); 
 					l.add(new Successor(s3, e3));
 				}				
 				for(int haux = 0; haux < helicopters.size(); ++haux)
