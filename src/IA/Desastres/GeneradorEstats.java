@@ -35,20 +35,20 @@ public class GeneradorEstats implements SuccessorFunction {
 				for(int haux = 0; haux < helicopters.size(); ++haux)
 				{
 
-					for(int g = 0; g < helicopters.get(h).get(v).size(); ++g)
+					/*for(int g = 0; g < helicopters.get(h).get(v).size(); ++g)
 					{
 						Estat estat1 = new Estat ((Estat)state);
 						estat1.mouGrupNouViatge(g, h, v, haux);
 						l.add(new Successor("Mou Grup Viatge Nou (Hi: "+h+", Vi: "+v+", Gi: "+g+", Hj: "+haux+")", estat1));
-					}
+					}*/
 					for(int vaux = 0; vaux < helicopters.get(haux).size(); ++ vaux)
 					{
-						if (haux > h || (haux == h && v != vaux && ((Estat)state).esSegonHeuristic()))
+						/*if (haux > h || (haux == h && v != vaux && ((Estat)state).esSegonHeuristic()))
 						{
 							Estat e = new Estat ((Estat)state);
 							e.intercambiaViatges(h, v, haux, vaux);
 							l.add(new Successor("Intercambi Viatges (Hi: "+h+", Vi: "+v+", Hj: "+haux+", Vj: "+vaux+")", e));
-						}
+						}*/
 						for(int g = 0; g < helicopters.get(h).get(v).size(); ++g)
 						{
 							if ((h == haux && v != vaux) || h != haux)
