@@ -23,7 +23,6 @@ public class GeneradorEstats implements SuccessorFunction {
 				if (helicopters.get(h).get(v).size() == 3)
 				{
 					Estat e1 = new Estat ((Estat)state);
-					Estat e2 = new Estat ((Estat)state);
 					Estat e3 = new Estat ((Estat)state);
 					e1.intercambiaGrups(h, v, 0, h, v, 1);
 					e3.intercambiaGrups(h, v, 1, h, v, 2);
