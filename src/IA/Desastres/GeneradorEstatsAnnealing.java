@@ -34,6 +34,7 @@ public class GeneradorEstatsAnnealing implements SuccessorFunction {
 		String s = "";
 		while(!b)
 		{
+			e = new Estat ((Estat)state);
 			float r = (float)Math.random()*a[2];
 			boolean aux = false; int i = 0;
 			while (i < 3 && !aux)
