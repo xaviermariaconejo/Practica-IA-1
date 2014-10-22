@@ -3,6 +3,7 @@ package IA.Desastres;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import aima.search.framework.Successor;
 import aima.search.framework.SuccessorFunction;
@@ -32,10 +33,11 @@ public class GeneradorEstatsAnnealing implements SuccessorFunction {
 		boolean b = false;
 		Estat e = new Estat ((Estat)state);
 		String s = "";
+		Random rand = new Random();
 		while(!b)
 		{
 			e = new Estat ((Estat)state);
-			float r = (float)Math.random()*a[2];
+			int r = rand.nextInt(a[2]);
 			boolean aux = false; int i = 0;
 			while (i < 3 && !aux)
 			{
@@ -44,46 +46,53 @@ public class GeneradorEstatsAnnealing implements SuccessorFunction {
 			}
 			switch (i)
 			{
-				case 0: int h = (int) Math.random()*helicopters.size();
-						int v = (int) Math.random()*helicopters.get(h).size();
-						if (helicopters.get(h).get(v).size() == 3)
-						{
-							double n = Math.random();
-							if (n < 0.5)
+				case 0: int h = rand.nextInt(helicopters.size());
+						if(helicopters.get(h).size() > 0) {
+						int v = rand.nextInt(helicopters.get(h).size());
+							if (helicopters.get(h).get(v).size() == 3)
 							{
-								b = e.intercambiaGrups(h, v, 0, h, v, 1);
-								s = "Rotacio Grups (Hi, "+h+", Vi: "+v+", Gi: 0, Hj: "+h+", Vj: "+v+", Gj: 1)";
-							}
-							else
-							{
-								b = e.intercambiaGrups(h, v, 1, h, v, 2);
-								s = "Rotacio Grups (Hi: "+h+", Vi: "+v+", Gi: 1, Hj: "+h+", Vj: "+v+", Gj: 2)";
-							}
-						}	
-						break;
-						
-				case 1: int Hi = (int) Math.random()*helicopters.size();
-						int Hj = (int) Math.random()*helicopters.size();
-						int Vi = (int) Math.random()*helicopters.get(Hi).size(); 
-						int Vj = (int) Math.random()*helicopters.get(Hj).size();
-						if (Vi != Vj)
-						{
-							int G = (int) Math.random()*helicopters.get(Hi).get(Vi).size();
-							b = e.mouGrups (G, Hi, Vi, Hj, Vj);
-							s = "Mou Grup Normal (Hi: "+Hi+", Vi: "+Vi+", Gi: "+G+", Hj: "+Hj+", Vj: "+Vj+")";
+								double n = rand.nextInt();
+								if (n < 0.5)
+								{
+									b = e.intercambiaGrups(h, v, 0, h, v, 1);
+									s = "Rotacio Grups (Hi, "+h+", Vi: "+v+", Gi: 0, Hj: "+h+", Vj: "+v+", Gj: 1)";
+								}
+								else
+								{
+									b = e.intercambiaGrups(h, v, 1, h, v, 2);
+									s = "Rotacio Grups (Hi: "+h+", Vi: "+v+", Gi: 1, Hj: "+h+", Vj: "+v+", Gj: 2)";
+								}
+							}	
 						}
 						break;
 						
-				case 2: int hi = (int) Math.random()*helicopters.size();
-						int hj = (int) Math.random()*helicopters.size();
-						int vi = (int) Math.random()*helicopters.get(hi).size(); 
-						int vj = (int) Math.random()*helicopters.get(hj).size();
-						if (vi != vj)
-						{
-							int gi = (int) Math.random()*helicopters.get(hi).get(vi).size();
-							int gj = (int) Math.random()*helicopters.get(hj).get(vj).size();
-							b = e.intercambiaGrups(hi, vi, gi, hj, vj, gj);
-							s = "Intercambi Grups (Hi: "+hi+", Vi: "+vi+", Gi: "+gi+", Hj: "+hj+", Vj: "+vj+", Gj: "+gj+")";
+				case 1: int Hi = rand.nextInt(helicopters.size());
+						int Hj = rand.nextInt(helicopters.size());
+						if(helicopters.get(Hi).size() > 0 && helicopters.get(Hj).size() > 0) {
+							int Vi = rand.nextInt(helicopters.get(Hi).size()); 
+							int Vj = rand.nextInt(helicopters.get(Hj).size());
+							if (Vi != Vj)
+							{
+								int G = (int) rand.nextInt(helicopters.get(Hi).get(Vi).size());
+								b = e.mouGrups (G, Hi, Vi, Hj, Vj);
+								s = "Mou Grup Normal (Hi: "+Hi+", Vi: "+Vi+", Gi: "+G+", Hj: "+Hj+", Vj: "+Vj+")";
+							}
+						}
+						break;
+						
+				case 2: 
+						int hi = rand.nextInt(helicopters.size());
+						int hj = rand.nextInt(helicopters.size());
+						if(helicopters.get(hi).size() > 0 && helicopters.get(hj).size() > 0) {
+							int vi = rand.nextInt(helicopters.get(hi).size()); 
+							int vj = rand.nextInt(helicopters.get(hj).size());
+							if (vi != vj)
+							{
+								int gi = rand.nextInt(helicopters.get(hi).get(vi).size());
+								int gj = rand.nextInt(helicopters.get(hj).get(vj).size());
+								b = e.intercambiaGrups(hi, vi, gi, hj, vj, gj);
+								s = "Intercambi Grups (Hi: "+hi+", Vi: "+vi+", Gi: "+gi+", Hj: "+hj+", Vj: "+vj+", Gj: "+gj+")";
+							}
 						}
 						break;
 			}
