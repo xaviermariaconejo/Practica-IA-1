@@ -18,11 +18,15 @@ public class Main {
 	
 	public static void main (String[] args) {
 		Random r = new Random(1234);
-		for(int i = 0; i < 16; ++i) {
+		for(int j = 1; j<=10;++j){
+			long t = 0;
+			int n = 15;
+			double sol = 0;
+		for(int i = 0; i < 15; ++i) {
 			seed = 1234;
 			try {
 				Grupos grupos = new Grupos(100,(int) seed);
-				Centros c = new Centros(5,1,(int) seed);
+				Centros c = new Centros(5,j,(int) seed);
 				ContextEstat cntx = new ContextEstat(grupos,c, false);
 				Estat e_ini = new Estat(cntx, seed);
 				e_ini.generaSoucioInicial(TipusInicial.GREEDY);
@@ -31,25 +35,29 @@ public class Main {
 				Search search = new HillClimbingSearch();
 				long time = System.currentTimeMillis();
 				SearchAgent agent = new SearchAgent(problem, search);
-				System.out.println((System.currentTimeMillis() - time));
+				t += System.currentTimeMillis() - time;
 				int rot, mov, mou_n, swap_g, swap_v;
 				rot = mov = mou_n = swap_g = swap_v = 0;
-				for(String s : (List<String>)agent.getActions()) {
+				/*for(String s : (List<String>)agent.getActions()) {
 					if(s.contains("Mou Grup Normal")) ++mov;
 					if(s.contains("Rotaci")) ++rot;
 					if(s.contains("Nou")) ++mou_n;
 					if(s.contains("Intercambi Viatges")) ++swap_v;
 					if(s.contains("Intercambi Grups")) ++swap_g;
-				}
+				}*/
 				//System.out.println(swap_g+"\t"+mov+"\t"+rot+"\t"+mou_n+"\t"+swap_v);
 				//System.out.println(seed);
 				List<Estat> l = search.getPathStates();
-				if(l.size() > 0) System.out.println("La solució millorada és de: "+l.get(l.size()-1).getTempsViatges()+"min");
+				if(l.size() > 0) sol += l.get(l.size()-1).getTempsViatges();
+				else --n;
 				//printActions(agent.getActions());
 				//printInstrumentation(agent.getInstrumentation());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}
+		System.out.println(t/n);
+		System.out.println(sol/n);
 		}
 	}
 	
