@@ -530,8 +530,8 @@ public class Estat {
 				int b1 = v.get(0).getCoordY() - y;
 				int a2 = v.get(v.size() - 1).getCoordX() - x;
 				int b2 = v.get(v.size() - 1).getCoordY() - y;
-				t_viatge = (float) (t_viatge + (INV_VEL_HEL)*Math.sqrt((a1*a1) + (b1*b1))
-				+ (INV_VEL_HEL)*Math.sqrt((a2*a2) + (b2*b2)) + v.get(v.size() - 1).getPrioridad()*v.get(v.size() - 1).getNPersonas());
+				t_viatge = (double) (t_viatge + (INV_VEL_HEL)*Math.sqrt((a1*a1) + (b1*b1))
+				+ (INV_VEL_HEL)*Math.sqrt((a2*a2) + (b2*b2)) + v.get(v.size() - 1).getPrioridad()*v.get(v.size() - 1).getNPersonas()+10);
 				
 				t_acc += t_viatge;
 				if(prio1) t_max = t_acc;
