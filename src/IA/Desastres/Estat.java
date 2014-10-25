@@ -190,6 +190,7 @@ public class Estat {
 				int b2 = v.get(v.size() - 1).getCoordY() - y;
 				temps = (float) (temps + (INV_VEL_HEL)*Math.sqrt((a1*a1) + (b1*b1))
 				+ (INV_VEL_HEL)*Math.sqrt((a2*a2) + (b2*b2)) + v.get(v.size() - 1).getPrioridad()*v.get(v.size() - 1).getNPersonas());
+				temps += 10; //Parche
 			}
 		}
 	}
