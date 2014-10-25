@@ -242,6 +242,7 @@ public class Estat {
 		helicopters.get(Hi).get(Vi).remove(G);
 		if(helicopters.get(Hi).get(Vi).size() == 0) {
 			helicopters.get(Hi).remove(Vi);
+			temps -= 10;//Parche
 			if(Hi == Hj && Vj > Vi) --Vj; //Parche del parche
 		}
 		recalcularPosaGrup(Hj, Vj, helicopters.get(Hj).get(Vj).size()-1);
