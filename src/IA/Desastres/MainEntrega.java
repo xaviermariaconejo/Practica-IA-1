@@ -42,7 +42,8 @@ public class MainEntrega {
 		System.out.println("            Resultats de l'execució");
 		System.out.println("================================================");
 		System.out.println();
-		System.out.println("Solució inicial: "+e_ini.getTempsViatges()+" min");
+		System.out.println("Solució del greedy\n \n\t->Suma dels temps de rescat: "+e_ini.getTempsViatges()+" min"+
+					"\n\t->Temps de rescat de ferits: "+e_ini.tempsMaximFerits()+"\n");
 		System.out.println(e_ini.toString());
 		
 		HeuristicFunction f;
@@ -71,7 +72,8 @@ public class MainEntrega {
 		
 		List<Estat> l1 = search.getPathStates();
 		if(l1.size() > 0) {
-			System.out.println("Solució millorada: "+(l1.get(l1.size()-1).getTempsViatges())+" min");
+			System.out.println("Solució millorada\n \n\t->Suma dels temps de rescat: "+(l1.get(l1.size()-1).getTempsViatges())+" min"+
+					"\n\t->Temps de rescat de ferits: "+l1.get(l1.size()-1).tempsMaximFerits()+"\n");
 			System.out.println(l1.get(l1.size()-1).toString());
 		}
 		else {
