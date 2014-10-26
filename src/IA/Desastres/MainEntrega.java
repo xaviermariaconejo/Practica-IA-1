@@ -6,6 +6,7 @@ import java.util.Properties;
 import java.util.Scanner;
 
 import IA.Desastres.Estat.TipusInicial;
+import aima.search.framework.HeuristicFunction;
 import aima.search.framework.Problem;
 import aima.search.framework.Search;
 import aima.search.framework.SearchAgent;
@@ -43,7 +44,11 @@ public class MainEntrega {
 		System.out.println("Solució inicial: "+e_ini.getTempsViatges()+" min");
 		System.out.println(e_ini.toString());
 		
-		Problem problem = new Problem(e_ini, new GeneradorEstats(), new EstatFinal(), new FuncioHeuristica1());
+		HeuristicFunction f;
+		if(heur == 1) f = new FuncioHeuristica1();
+		else f = new FuncioHeuristica2();
+		
+		Problem problem = new Problem(e_ini, new GeneradorEstats(), new EstatFinal(), f);
 		Search search;
 		if(alg == 1) {
 			search = new HillClimbingSearch();

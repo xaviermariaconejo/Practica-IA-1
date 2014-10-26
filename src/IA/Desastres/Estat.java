@@ -558,6 +558,7 @@ public class Estat {
 			for(ArrayList<Grupo> v : h) {
 				ret += "{"+buscaGrupIndex(v.get(0));
 				for(int j = 1; j < v.size(); ++j) {
+					if(v.get(j).getPrioridad() == 1) ret+="*";
 					ret += ", "+buscaGrupIndex(v.get(j));
 				}
 				ret += "}";
