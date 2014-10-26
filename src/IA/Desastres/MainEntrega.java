@@ -82,11 +82,13 @@ public class MainEntrega {
 
 		System.out.println("Temps d'execució: "+ (elapsedtime)+" ms");
 		
-		System.out.println("Vols veure la traça d'operadors d'AIMA? (1 - si, 2 - no)");
-		int trace = scr.nextInt();
-		if(trace == 1) {
-			printActions(agent.getActions());
-			printInstrumentation(agent.getInstrumentation());
+		if(alg == 1) {
+			System.out.println("Vols veure la traça d'operadors d'AIMA? (1 - si, 2 - no)");
+			int trace = scr.nextInt();
+			if(trace == 1) {
+				printActions(agent.getActions());
+				printInstrumentation(agent.getInstrumentation());
+			}
 		}
 	}
 
