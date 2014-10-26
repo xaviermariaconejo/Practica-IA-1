@@ -10,6 +10,7 @@ import aima.search.framework.HeuristicFunction;
 import aima.search.framework.Problem;
 import aima.search.framework.Search;
 import aima.search.framework.SearchAgent;
+import aima.search.framework.SuccessorFunction;
 import aima.search.informed.HillClimbingSearch;
 import aima.search.informed.SimulatedAnnealingSearch;
 
@@ -48,7 +49,15 @@ public class MainEntrega {
 		if(heur == 1) f = new FuncioHeuristica1();
 		else f = new FuncioHeuristica2();
 		
-		Problem problem = new Problem(e_ini, new GeneradorEstats(), new EstatFinal(), f);
+		SuccessorFunction sf;
+		if(alg == 1) {
+			sf = new GeneradorEstats();
+		}
+		else {
+			sf = new GeneradorEstatsAnnealing();
+		}
+		
+		Problem problem = new Problem(e_ini, sf, new EstatFinal(), f);
 		Search search;
 		if(alg == 1) {
 			search = new HillClimbingSearch();
